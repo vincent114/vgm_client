@@ -1,0 +1,27 @@
+{
+  "name": "vgm_app",
+  "version": "1.0.0",
+  "description": "Gestionnaire de ludothèque",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vincent114/vgm_client.git"
+  },
+  "keywords": [
+    "video",
+    "games",
+    "metadatas"
+  ],
+  "author": "Vincent Boni",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vincent114/vgm_client/issues"
+  },
+  "homepage": "https://github.com/vincent114/vgm_client#readme",
+  "devDependencies": {
+    "electron": "^16.0.5"
+  }
+}
