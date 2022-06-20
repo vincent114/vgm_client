@@ -6,7 +6,6 @@ import clsx from 'clsx';
 import { Helper } from 'nexus/ui/helper/Helper';
 import { HeaderTitle } from 'nexus/layout/header/Header';
 import { MenuItem } from 'nexus/layout/menu/Menu';
-import { Icon } from 'nexus/ui/icon/Icon';
 
 import './Search.css';
 
@@ -75,7 +74,7 @@ export const SearchMenuItem = observer((props) => {
 
 	const searchContext = 'search';
 
-	// Evènements
+	// Events
 	// ==================================================================================================
 
 	const handleMenuItemClick = () => {
@@ -88,7 +87,7 @@ export const SearchMenuItem = observer((props) => {
 
 	return (
 		<MenuItem
-			icon={<Icon name="search" width="120px" />}
+			iconName="search"
 			label="Rechercher"
 			activeContexts={[searchContext]}
 			callbackClick={handleMenuItemClick}

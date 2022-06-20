@@ -57,13 +57,6 @@ const RootStore = types
 
 			// -
 
-			// Search
-			if (navContext == 'search') {
-				app.navigate('/main.html', 'search');
-			}
-
-			// -
-
 			// Ludothèque
 			if (navContext == 'collection') {
 				app.navigate('/collection', 'collection', [
@@ -85,6 +78,7 @@ const RootStore = types
 let contexts = {
 	'home': HomePage,
 	'search': SearchPage,
+
 	'collection': CollectionPage,
 	'admin': AdminPage,
 }
@@ -99,9 +93,7 @@ let popups = {}
 
 let routes = {
 	'home': '/main.html',
-	'search': '/search',
 	'collection': '/collection',
-	'admin': '/admin',
 }
 
 // Store
@@ -112,19 +104,20 @@ let initSnapshot = makeInitSnapshot(routes, {
 		'context': 'home', // TODO : Last context ?
 		'kind': 'electron',
 		'theme': {
-			'variant': 'light',
-			'palette': {
-				'default': {
-					'main': '#000000',
-					'contrastText': '#fff',
-				},
+			'palette_light': {
 				'primary': {
 					'main': '#3f51b5',
-					'contrastText': '#fff',
 				},
 				'secondary': {
 					'main': '#607d8b',
-					'contrastText': '#fff',
+				},
+			},
+			'palette_dark': {
+				'primary': {
+					'main': '#3f51b5',
+				},
+				'secondary': {
+					'main': '#607d8b',
 				},
 			}
 		}

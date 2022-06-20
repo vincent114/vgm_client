@@ -6,7 +6,6 @@ import clsx from 'clsx';
 import { Helper } from 'nexus/ui/helper/Helper';
 import { HeaderTitle } from 'nexus/layout/header/Header';
 import { MenuItem } from 'nexus/layout/menu/Menu';
-import { Icon } from 'nexus/ui/icon/Icon';
 
 import './Collection.css';
 
@@ -75,7 +74,7 @@ export const CollectionMenuItem = observer((props) => {
 
 	const collectionContext = 'collection';
 
-	// Evènements
+	// Events
 	// ==================================================================================================
 
 	const handleMenuItemClick = () => {
@@ -88,7 +87,7 @@ export const CollectionMenuItem = observer((props) => {
 
 	return (
 		<MenuItem
-			icon={<Icon name="sports_esports" width="120px" />}
+			iconName="sports_esports"
 			label="Ludothèque"
 			activeContexts={[collectionContext]}
 			callbackClick={handleMenuItemClick}
