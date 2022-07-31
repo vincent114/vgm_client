@@ -163,7 +163,7 @@ var STATIC_SMAP = {
     kind: "webserver",
     port: 7304,
     database: null,
-    version: '4.0.0',
+    version: '4.0.1',
     changeset: '...',
     changeset_instance: '...',
     internal: '/index.html',
@@ -543,7 +543,14 @@ function Datas_arrayLikeToArray(arr, len) { if (len == null || len > arr.length)
 // Datas
 // ======================================================================================================
 var LETTERS = (/* unused pure expression or super */ null && (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']));
-var NUMBERS = (/* unused pure expression or super */ null && (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])); // Functions
+var NUMBERS = (/* unused pure expression or super */ null && (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']));
+var LIBRARY_TARGET_CHOICES = [{
+  "value": "default",
+  "label": "Emplacement par défaut"
+}, {
+  "value": "custom",
+  "label": "Emplacement personnalisé"
+}]; // Functions
 // ======================================================================================================
 
 function uuid() {
@@ -14612,7 +14619,7 @@ var GRAMOPHONE_CHANGELOGS = [{
   "changes": [{
     "title": "Optimisation des performances d'écriture"
   }, {
-    "title": "Correction des erreurs de jeunesse"
+    "title": "Correction des petites erreurs de jeunesse"
   }, {
     "title": "Possibilité de choisir l'emplacement de sauvegarde"
   }],
@@ -20447,7 +20454,7 @@ var services_STATIC_SMAP = {
     kind: "webserver",
     port: 7304,
     database: null,
-    version: '4.0.0',
+    version: '4.0.1',
     changeset: '...',
     changeset_instance: '...',
     internal: '/index.html',
@@ -21621,16 +21628,8 @@ function Admin_arrayLikeToArray(arr, len) { if (len == null || len > arr.length)
 
 
 
- // Datas
-// ======================================================================================================
 
-var LIBRARY_TARGET_CHOICES = [{
-  "value": "default",
-  "label": "Emplacement par défaut"
-}, {
-  "value": "custom",
-  "label": "Emplacement personnalisé"
-}]; // Functions Components ReactJS
+ // Functions Components ReactJS
 // ======================================================================================================
 // ***** RenderSectionLibrary *****
 // ********************************
@@ -21842,14 +21841,12 @@ var LibraryStore = mobx_state_tree_module/* types.model */.V5.model({
     refreshAvailability: function refreshAvailability() {
       // Le chemin personnalisé de la collection est-il toujours accessible ?
       // ---
-      if (!self.custom_path) {
-        return;
-      }
-
-      if (ipc.sendSync('existsSync', self.custom_path)) {
-        self.custom_path_available = true;
-      } else {
-        self.custom_path_available = false;
+      if (self.custom_path) {
+        if (ipc.sendSync('existsSync', self.custom_path)) {
+          self.custom_path_available = true;
+        } else {
+          self.custom_path_available = false;
+        }
       }
     },
     update: function update(raw) {

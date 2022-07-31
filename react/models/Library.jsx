@@ -65,12 +65,12 @@ export const LibraryStore = types
 			// Le chemin personnalisé de la collection est-il toujours accessible ?
 			// ---
 
-			if (!self.custom_path) { return; }
-
-			if (ipc.sendSync('existsSync', self.custom_path)) {
-				self.custom_path_available = true;
-			} else {
-				self.custom_path_available = false;
+			if (self.custom_path) {
+				if (ipc.sendSync('existsSync', self.custom_path)) {
+					self.custom_path_available = true;
+				} else {
+					self.custom_path_available = false;
+				}
 			}
 		},
 

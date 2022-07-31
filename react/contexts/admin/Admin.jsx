@@ -11,22 +11,9 @@ import { Helper } from 'nexus/ui/helper/Helper';
 import { Icon } from 'nexus/ui/icon/Icon';
 import { IconButton } from 'nexus/ui/button/Button';
 
+import { LIBRARY_TARGET_CHOICES } from 'nexus/utils/Datas';
+
 import './Admin.css';
-
-
-// Datas
-// ======================================================================================================
-
-const LIBRARY_TARGET_CHOICES = [
-	{
-		"value": "default",
-		"label": "Emplacement par défaut",
-	},
-	{
-		"value": "custom",
-		"label": "Emplacement personnalisé",
-	}
-]
 
 
 // Functions Components ReactJS
