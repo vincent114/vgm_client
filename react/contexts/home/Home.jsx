@@ -8,7 +8,7 @@ import './Home.css';
 
 
 // Functions Components ReactJS
-// -------------------------------------------------------------------------------------------------------------
+// ======================================================================================================
 
 // ***** HomePage *****
 // ********************
@@ -29,7 +29,7 @@ export const HomePage = observer((props) => {
 
 		return (
 			<Helper
-				icon={<img className="nx-helper-icon" src="/static/favicons/android-icon-192x192.png" />}
+				icon={<img className="nx-helper-icon" src="static/favicons/android-icon-192x192.png" />}
 				title="Bienvenue sur VGM !"
 				subtitle="Votre gestionnaire contemplatif de ludothèque."
 				show={true}

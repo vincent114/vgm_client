@@ -5,18 +5,27 @@ import { observer } from "mobx-react-lite";
 
 import { NxAppStore, NxApp, makeInitSnapshot } from 'nexus/NxApp';
 
+import { STATIC_SMAP } from 'nexus/models/services';
+import { copyObj } from 'nexus/utils/Datas';
+import { getFromStorage, setToStorage } from 'nexus/utils/Storage';
+
 import { ContextualHeader } from 'vgm_client/ui/ContextualHeader';
 import { ContextualMenu } from 'vgm_client/ui/ContextualMenu';
 import { HomePage } from 'vgm_client/contexts/home/Home';
 import { SearchStore, SearchPage } from 'vgm_client/contexts/search/Search';
-import { CollectionStore, CollectionPage } from 'vgm_client/contexts/collection/Collection';
+import { BrandsStore, BrandsPage } from 'vgm_client/contexts/brands/Brands';
+import { BrandPage } from 'vgm_client/contexts/brand/Brand';
+import { PlateformsStore } from 'vgm_client/models/Plateforms';
+import { PlateformPage } from 'vgm_client/contexts/plateform/Plateform';
 import { AdminPage } from 'vgm_client/contexts/admin/Admin';
+
+import { LibraryStore } from 'vgm_client/models/Library';
 
 import './Main.css';
 
 
 // Models
-// -------------------------------------------------------------------------------------------------------------
+// ======================================================================================================
 
 // ***** RootStore *****
 // *********************
@@ -24,17 +33,29 @@ import './Main.css';
 const TAG_RootStore = () => {}
 const RootStore = types
 	.model({
-		'app': types.optional(NxAppStore, {}),
+		app: types.optional(NxAppStore, {}),
 
 		// Search
 		// -
 
-		'search': types.optional(SearchStore, {}),
+		search: types.optional(SearchStore, {}),
 
 		// Ludothèque
 		// -
 
-		'collection': types.optional(CollectionStore, {}),
+		brands: types.optional(BrandsStore, {}),
+		brandId: types.maybeNull(types.string),
+
+		plateforms: types.optional(PlateformsStore, {}),
+		plateformId: types.maybeNull(types.string),
+
+		// -
+
+		library: types.optional(LibraryStore, {}),
+
+		// -
+
+		loaded: false,
 
 	})
 	.actions(self => ({
@@ -57,20 +78,31 @@ const RootStore = types
 
 			// -
 
-			// Ludothèque
-			if (navContext == 'collection') {
-				app.navigate('/collection', 'collection', [
-					{"op": "replace", "path": "/collection/loaded", "value": false},
+			// Brands
+			if (navContext == 'brands') {
+				app.navigate('/main.html', 'brands');
+			}
+			if (navContext == 'brand') {
+				setToStorage('lastBrandId', contextId);
+				app.navigate('/main.html', 'brand', [
+					{"op": "replace", "path": "/brandId", "value": contextId},
 				]);
 			}
 
+			// Plateform
+			if (navContext == 'plateform') {
+				setToStorage('lastPlateformId', contextId);
+				app.navigate('/main.html', 'plateform', [
+					{"op": "replace", "path": "/plateformId", "value": contextId},
+				]);
+			}
 		},
 
 	}))
 
 
 // Init
-// -------------------------------------------------------------------------------------------------------------
+// ======================================================================================================
 
 // Contexts
 // -
@@ -79,7 +111,11 @@ let contexts = {
 	'home': HomePage,
 	'search': SearchPage,
 
-	'collection': CollectionPage,
+	'brands': BrandsPage,
+	'brand': BrandPage,
+
+	'plateform': PlateformPage,
+
 	'admin': AdminPage,
 }
 
@@ -93,7 +129,11 @@ let popups = {}
 
 let routes = {
 	'home': '/main.html',
-	'collection': '/collection',
+
+	'brands': '/brands',
+	'brand:brandId': '/brand/:brandId',
+
+	'plateform:plateformId': '/plateform/:plateformId',
 }
 
 // Store
@@ -101,8 +141,16 @@ let routes = {
 
 let initSnapshot = makeInitSnapshot(routes, {
 	'app': {
-		'context': 'home', // TODO : Last context ?
+		'context': getFromStorage("lastContext", "home"),
 		'kind': 'electron',
+		'platform': ipc.sendSync('platform'),
+		// 'tasks': ['load_library'],
+		'header': {
+			'dynamic': false,
+		},
+		'menu': {
+			'pinned': false,
+		},
 		'theme': {
 			'palette_light': {
 				'primary': {
@@ -120,7 +168,9 @@ let initSnapshot = makeInitSnapshot(routes, {
 					'main': '#607d8b',
 				},
 			}
-		}
+		},
+		'brandId': getFromStorage('lastBrandId', ''),
+		'plateformId': getFromStorage('lastPlateformId', ''),
 	}
 });
 
@@ -130,17 +180,23 @@ export const RootStoreContext = React.createContext(rootStore);
 window.store = rootStore;
 window.storeContext = RootStoreContext;
 
+let staticRaw = {
+	'smap': copyObj(STATIC_SMAP),
+}
+staticRaw['smap']['me'] = copyObj(STATIC_SMAP['vgm']);
+
 rootStore.app.init(
 	(datas) => {
 		rootStore.update(datas);
 	},
 	popups,
-	{}
+	{},
+	staticRaw
 );
 
 
 // Functions Components ReactJS
-// -------------------------------------------------------------------------------------------------------------
+// ======================================================================================================
 
 // ***** Root *****
 // ****************
@@ -165,7 +221,7 @@ const Root = observer(() => {
 
 
 // DOM Ready
-// --------------------------------------------------------------------------------------------------------------------------------------------
+// ======================================================================================================
 
 window.addEventListener('DOMContentLoaded', () => {
 	ReactDOM.render(

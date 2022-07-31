@@ -9,6 +9,7 @@ import {
 	Menu
 } from 'nexus/layout/menu/Menu';
 import { HomeMenuItem } from 'nexus/contexts/home/Home';
+import { SearchMenuItem } from 'nexus/contexts/search/Search';
 import { AboutMenuItem } from 'nexus/contexts/about/About';
 import { AdminMenuItem } from 'nexus/contexts/admin/Admin';
 import {
@@ -18,8 +19,7 @@ import {
 import { AccountMenuItem } from 'nexus/contexts/account/Account';
 import { Icon } from 'nexus/ui/icon/Icon';
 
-import { SearchMenuItem } from 'vgm_client/contexts/search/Search';
-import { CollectionMenuItem } from 'vgm_client/contexts/collection/Collection';
+import { BrandsMenuItem } from 'vgm_client/contexts/brands/Brands';
 
 
 // Functions Components ReactJS
@@ -49,7 +49,7 @@ export const ContextualMenu = observer((props) => {
 
 			<MenuDivider />
 
-			<CollectionMenuItem />
+			<BrandsMenuItem />
 
 			<MenuDivider />
 

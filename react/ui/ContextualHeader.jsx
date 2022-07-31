@@ -4,13 +4,23 @@ import { observer } from "mobx-react-lite";
 import clsx from 'clsx';
 
 import { Header } from 'nexus/layout/header/Header';
-import { HomeHeaderMiddle } from 'nexus/contexts/home/Home';
+import { SearchHeaderMiddle } from 'nexus/contexts/search/Search';
 import { AboutHeaderLeft } from 'nexus/contexts/about/About';
 import { AdminHeaderLeft } from 'nexus/contexts/admin/Admin';
 import { AccountHeaderLeft } from 'nexus/contexts/account/Account';
 
-import { SearchHeaderMiddle } from 'vgm_client/contexts/search/Search';
-import { CollectionHeaderLeft } from 'vgm_client/contexts/collection/Collection';
+import {
+	BrandsHeaderLeft,
+	BrandsHeaderRight
+} from 'vgm_client/contexts/brands/Brands';
+import {
+	BrandHeaderLeft,
+	BrandHeaderRight
+} from 'vgm_client/contexts/brand/Brand';
+import {
+	PlateformHeaderLeft,
+	PlateformHeaderRight
+} from 'vgm_client/contexts/plateform/Plateform';
 
 
 // Functions Components ReactJS
@@ -27,6 +37,7 @@ export const ContextualHeader = observer((props) => {
 
 	// From ... store
 
+	const breakPoint650 = app.breakPoint650;
 	const context = app.context;
 	const homeContext = app.homeContext;
 	const authContext = app.authContext;
@@ -40,27 +51,37 @@ export const ContextualHeader = observer((props) => {
 
 	// -------------------------------------------------
 
-	const renderHeaderHome = () => {
-
-		if ([homeContext, authContext].indexOf(context) == -1 ) { return; }
-
-		headerMiddle = <HomeHeaderMiddle />
-	}
-
 	const renderHeaderSearch = () => {
 
-		if (context != 'search') { return; }
+		if (breakPoint650 && context != 'search') { return; }
 
 		headerMiddle = <SearchHeaderMiddle />
 	}
 
 	// -------------------------------------------------
 
-	const renderHeaderCollection = () => {
+	const renderHeaderBrands = () => {
 
-		if (context != 'collection') { return; }
+		if (context != 'brands') { return; }
 
-		headerMiddle = <CollectionHeaderLeft />
+		headerLeft = <BrandsHeaderLeft />
+		headerRight = <BrandsHeaderRight />
+	}
+
+	const renderHeaderBrand = () => {
+
+		if (context != 'brand') { return; }
+
+		headerLeft = <BrandHeaderLeft />
+		headerRight = <BrandHeaderRight />
+	}
+
+	const renderHeaderPlateform = () => {
+
+		if (context != 'plateform') { return; }
+
+		headerLeft = <PlateformHeaderLeft />
+		headerRight = <PlateformHeaderRight />
 	}
 
 	// -------------------------------------------------
@@ -90,10 +111,10 @@ export const ContextualHeader = observer((props) => {
 
 	// -------------------------------------------------
 
-	renderHeaderHome();
 	renderHeaderSearch();
 
-	renderHeaderCollection();
+	renderHeaderBrands();
+	renderHeaderBrand();
 
 	renderHeaderAbout();
 	renderHeaderAdmin();

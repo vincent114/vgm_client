@@ -3,22 +3,26 @@ import { types, getRoot } from "mobx-state-tree";
 import { observer } from "mobx-react-lite";
 import clsx from 'clsx';
 
+import { BrandStore } from 'vgm_client/contexts/brand/Brand';
+
 import { Helper } from 'nexus/ui/helper/Helper';
 import { HeaderTitle } from 'nexus/layout/header/Header';
 import { MenuItem } from 'nexus/layout/menu/Menu';
 
-import './Collection.css';
+import './Brands.css';
 
 
 // Models
-// -------------------------------------------------------------------------------------------------------------
+// ======================================================================================================
 
-// ***** CollectionStore *****
-// ***************************
+// ***** BrandsStore *****
+// ***********************
 
-const TAG_CollectionStore = () => {}
-export const CollectionStore = types
+const TAG_BrandsStore = () => {}
+export const BrandsStore = types
 	.model({
+		by_id: types.map(BrandStore),
+
 		loaded: false,
 	})
 	.actions(self => ({
@@ -27,23 +31,17 @@ export const CollectionStore = types
 			self[field] = value;
 		},
 
-		// -
-
-		update: (raw) => {
-
-		},
-
 	}))
 
 
 // Functions Components ReactJS
-// -------------------------------------------------------------------------------------------------------------
+// ======================================================================================================
 
-// ***** CollectionHeaderLeft *****
-// ********************************
+// ***** BrandsHeaderLeft *****
+// ****************************
 
-const TAG_CollectionHeaderLeft = () => {}
-export const CollectionHeaderLeft = observer((props) => {
+const TAG_BrandsHeaderLeft = () => {}
+export const BrandsHeaderLeft = observer((props) => {
 
 	const store = React.useContext(window.storeContext);
 	const app = store.app;
@@ -60,11 +58,28 @@ export const CollectionHeaderLeft = observer((props) => {
 	)
 })
 
-// ***** CollectionMenuItem *****
-// ******************************
+// ***** BrandsHeaderRight *****
+// *****************************
 
-const TAG_CollectionMenuItem = () => {}
-export const CollectionMenuItem = observer((props) => {
+const TAG_BrandsHeaderRight = () => {}
+export const BrandsHeaderRight = observer((props) => {
+
+	// const store = React.useContext(window.storeContext);
+	// const app = store.app;
+
+	// ...
+
+	// Render
+	// ==================================================================================================
+
+	return null;
+})
+
+// ***** BrandsMenuItem *****
+// **************************
+
+const TAG_BrandsMenuItem = () => {}
+export const BrandsMenuItem = observer((props) => {
 
 	const store = React.useContext(window.storeContext);
 	const app = store.app;
@@ -72,13 +87,13 @@ export const CollectionMenuItem = observer((props) => {
 
 	// ...
 
-	const collectionContext = 'collection';
+	const brandsContext = 'brands';
 
 	// Events
 	// ==================================================================================================
 
 	const handleMenuItemClick = () => {
-		store.navigateTo(collectionContext);
+		store.navigateTo(brandsContext);
 		app.menu.close();
 	}
 
@@ -89,17 +104,17 @@ export const CollectionMenuItem = observer((props) => {
 		<MenuItem
 			iconName="sports_esports"
 			label="Ludothèque"
-			activeContexts={[collectionContext]}
+			activeContexts={[brandsContext]}
 			callbackClick={handleMenuItemClick}
 		/>
 	)
 })
 
-// ***** CollectionPage *****
-// **************************
+// ***** BrandsPage *****
+// **********************
 
-const TAG_CollectionPage = () => {}
-export const CollectionPage = observer((props) => {
+const TAG_BrandsPage = () => {}
+export const BrandsPage = observer((props) => {
 
 	const store = React.useContext(window.storeContext);
 	const app = store.app;
