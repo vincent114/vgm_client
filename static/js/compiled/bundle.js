@@ -1,7 +1,7 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 910:
+/***/ 7844:
 /***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -3157,6 +3157,30 @@ var MusicNoteIcon = function MusicNoteIcon(props) {
     d: "M12 3l.01 10.55c-.59-.34-1.27-.55-2-.55C7.79 13 6 14.79 6 17s1.79 4 4.01 4S14 19.21 14 17V7h4V3h-6zm-1.99 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"
   }));
 };
+;// CONCATENATED MODULE: ../../nexus/react/components/svg_icons/MyLocation.jsx
+ // Functions Components ReactJS
+// ======================================================================================================
+
+var MyLocationIcon = function MyLocationIcon(props) {
+  // From ... props
+  var color = props.color ? props.color : '#000000';
+  var height = props.height ? props.height : 24;
+  var width = props.width ? props.width : 24; // Render
+  // ==================================================================================================
+
+  return /*#__PURE__*/react.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    height: height,
+    viewBox: "0 0 24 24",
+    width: width,
+    fill: color
+  }, /*#__PURE__*/react.createElement("path", {
+    d: "M0 0h24v24H0V0z",
+    fill: "none"
+  }), /*#__PURE__*/react.createElement("path", {
+    d: "M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"
+  }));
+};
 ;// CONCATENATED MODULE: ../../nexus/react/components/svg_icons/NewReleases.jsx
  // Functions Components ReactJS
 // ======================================================================================================
@@ -4987,6 +5011,7 @@ var Icon = __webpack_require__(3244);
 
 
 
+
  // Datas
 // -------------------------------------------------------------------------------------------------------------
 
@@ -5079,6 +5104,7 @@ var ICON_KEYS_TO_COMPONENT = {
   'move_down': MoveDownIcon,
   'move_up': MoveUpIcon,
   'music_note': MusicNoteIcon,
+  'my_location': MyLocationIcon,
   'new_releases': NewReleasesIcon,
   'newspaper': NewspaperIcon,
   'no_accounts': NoAccountsIcon,
@@ -7573,8 +7599,10 @@ var Field_Field = (0,es/* observer */.Pi)(function (props) {
   var onKeyUp = props.onKeyUp;
   var onKeyDown = props.onKeyDown;
   var onClick = props.onClick;
-  var startAdornment = props.startAdornment ? props.startAdornment : null;
-  var endAdornment = props.endAdornment ? props.endAdornment : null;
+  var startAdornment = props.startAdornment ? props.startAdornment : null; // let startAdornmentOnClick = props.startAdornmentOnClick;
+
+  var endAdornment = props.endAdornment ? props.endAdornment : null; // let endAdornementOnClick = props.endAdornementOnClick;
+
   var variant = props.variant ? props.variant : 'contained'; // contained, outlined
 
   var color = props.color ? props.color : 'primary'; // primary, secondary, white, black
@@ -14574,7 +14602,31 @@ var NEXORA_CHANGELOGS = [{
 // 		{"title": ""},
 // 	],
 // },
+// Liste des genres musicaux -> https://fr.wikipedia.org/wiki/Liste_de_styles_musicaux
 var GRAMOPHONE_CHANGELOGS = [{
+  "status": "prod",
+  "date": "2022-07-31",
+  "app_key": "gramophone",
+  "version": "4.0.1",
+  "version_name": "Opera",
+  "changes": [{
+    "title": "Optimisation des performances d'écriture"
+  }, {
+    "title": "Correction des erreurs de jeunesse"
+  }, {
+    "title": "Possibilité de choisir l'emplacement de sauvegarde"
+  }],
+  "version_assets": [{
+    "plateform_key": "macos",
+    "filename": "gramophone_401_macOS.zip"
+  }, {
+    "plateform_key": "macosARM",
+    "filename": "gramophone_401_macosARM.zip"
+  }, {
+    "plateform_key": "win64",
+    "filename": "gramophone_401_win64.zip"
+  }]
+}, {
   "status": "prod",
   "date": "2022-07-28",
   "app_key": "gramophone",
@@ -14603,16 +14655,6 @@ var GRAMOPHONE_CHANGELOGS = [{
     "content": "Et de facilité de maintenance."
   }, {
     "title": "Amélioration des performances (app native Apple Silicon)"
-  }],
-  "version_assets": [{
-    "plateform_key": "macos",
-    "filename": "gramophone_400_macOS.zip"
-  }, {
-    "plateform_key": "macosARM",
-    "filename": "gramophone_400_macosARM.zip"
-  }, {
-    "plateform_key": "win64",
-    "filename": "gramophone_400_win64.zip"
   }]
 }, {
   "status": "prod",
@@ -21551,34 +21593,198 @@ var GamesStore = mobx_state_tree_module/* types.model */.V5.model({
 // EXTERNAL MODULE: ./contexts/admin/Admin.css
 var admin_Admin = __webpack_require__(4251);
 ;// CONCATENATED MODULE: ./contexts/admin/Admin.jsx
+function Admin_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = Admin_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function Admin_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return Admin_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return Admin_arrayLikeToArray(o, minLen); }
+
+function Admin_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 
 
 
- // Functions Components ReactJS
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ // Datas
 // ======================================================================================================
-// ***** AdminPage *****
+
+var LIBRARY_TARGET_CHOICES = [{
+  "value": "default",
+  "label": "Emplacement par défaut"
+}, {
+  "value": "custom",
+  "label": "Emplacement personnalisé"
+}]; // Functions Components ReactJS
+// ======================================================================================================
+// ***** RenderSectionLibrary *****
+// ********************************
+
+var TAG_RenderSectionLibrary = function TAG_RenderSectionLibrary() {};
+
+var RenderSectionLibrary = (0,es/* observer */.Pi)(function (props) {
+  var store = react.useContext(window.storeContext);
+  var app = store.app;
+  var snackbar = app.snackbar;
+  var library = store.library; // From ... store
+
+  var isLoading = app.isLoading;
+  var pathToUse = library.path_to_use;
+  var customPath = library.custom_path;
+  var customPathAvailable = library.custom_path_available; // ...
+  // Events
+  // ==================================================================================================
+
+  var handleFieldChange = function handleFieldChange(savePath, value) {
+    library.save(function () {
+      clearTimeout(window.timeoutReload);
+      window.timeoutReload = setTimeout(function () {
+        store.reload();
+      }, 1000);
+    });
+  };
+
+  var handleBrowseCustomPath = function handleBrowseCustomPath() {
+    ipc.once('folderChoosed', function (folders) {
+      var _iterator = Admin_createForOfIteratorHelper(folders),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var folder = _step.value;
+          library.setField("path_to_use", "custom");
+          library.setField("custom_path", folder);
+          handleFieldChange();
+          break;
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+    });
+    ipc.send('chooseFolder');
+  }; // Render
+  // ==================================================================================================
+  // Section -> Icon
+  // -------------------------------------------------
+
+
+  var sectionIcon = /*#__PURE__*/react.createElement(Icon_Icon, {
+    name: "save"
+  }); // Section -> Title
+  // -------------------------------------------------
+
+  var sectionTitle = "Emplacement de sauvegarde"; // Section -> Content
+  // -------------------------------------------------
+
+  var customPathError = "";
+
+  if (pathToUse == "custom" && customPath && !customPathAvailable) {
+    customPathError = "Dossier introuvable.";
+  }
+
+  var sectionContent = /*#__PURE__*/react.createElement("div", null, /*#__PURE__*/react.createElement(Field_Field, {
+    id: "rad-path-to-use",
+    component: "radios",
+    datas: LIBRARY_TARGET_CHOICES,
+    savePath: ['library', 'path_to_use'],
+    disabled: isLoading,
+    className: "rad-path-to-use",
+    style: {
+      marginLeft: '2px'
+    },
+    callbackChange: handleFieldChange
+  }), /*#__PURE__*/react.createElement(Row_Row, null, /*#__PURE__*/react.createElement(Field_Field, {
+    id: "txt-custom-path",
+    component: "input",
+    savePath: ['library', 'custom_path'],
+    disabled: isLoading,
+    error: customPathError,
+    endAdornment: /*#__PURE__*/react.createElement(IconButton, {
+      size: "tiny",
+      color: "typography",
+      iconName: "more_horiz",
+      disabled: isLoading,
+      onClick: function onClick() {
+        return handleBrowseCustomPath();
+      }
+    }),
+    style: {
+      marginLeft: '43px'
+    },
+    callbackBlur: handleFieldChange
+  }))); // -------------------------------------------------
+
+  return /*#__PURE__*/react.createElement(Section_Section, {
+    icon: sectionIcon,
+    title: sectionTitle
+  }, sectionContent);
+}); // ***** RenderAdmin *****
+// ***********************
+
+var Admin_TAG_RenderAdmin = function TAG_RenderAdmin() {};
+
+var Admin_RenderAdmin = (0,es/* observer */.Pi)(function (props) {
+  var store = react.useContext(window.storeContext);
+  var app = store.app; // ...
+  // Render
+  // ==================================================================================================
+
+  return /*#__PURE__*/react.createElement(react.Fragment, null, /*#__PURE__*/react.createElement(RenderSectionLibrary, null));
+}); // ***** AdminPage *****
 // *********************
 
 var Admin_TAG_AdminPage = function TAG_AdminPage() {};
 
 var Admin_AdminPage = (0,es/* observer */.Pi)(function (props) {
   var store = react.useContext(window.storeContext);
-  var app = store.app; // Renderers
+  var app = store.app; // From ... store
+
+  var initialized = app.initialized; // ...
+
+  var showHelper = !initialized ? true : false; // Renderers
   // ==================================================================================================
+
+  var renderPage = function renderPage() {
+    // Render :: Page
+    // ---
+    var pageContent = null;
+
+    if (initialized) {
+      pageContent = /*#__PURE__*/react.createElement(Admin_RenderAdmin, null);
+    }
+
+    return pageContent;
+  };
 
   var renderHelper = function renderHelper() {
     // Render :: Helper
     // ---
     return /*#__PURE__*/react.createElement(Helper_Helper, {
       iconName: "setting",
-      show: true
+      show: showHelper
     });
   };
 
   return /*#__PURE__*/react.createElement("div", {
     className: "nx-page"
-  }, renderHelper());
+  }, renderPage(), renderHelper());
 });
 ;// CONCATENATED MODULE: ./models/Library.jsx
 
@@ -21764,14 +21970,25 @@ var RootStore = mobx_state_tree_module/* types.model */.V5.model({
         app.navigateTo('admin');
       });
     },
+    load: function load() {
+      self.brands.load(self.afterLoad);
+      self.plateforms.load(self.afterLoad);
+      self.games.load(self.afterLoad);
+    },
+    reload: function reload() {
+      self.brands.setField('loaded', false);
+      self.plateforms.setField('loaded', false);
+      self.games.setField('loaded', false);
+      self.loaded = false;
+      self.library.load();
+      self.load();
+    },
     update: function update(datas) {
       // VGM-specific init datas
       // ---
       self.library.load();
       setTimeout(function () {
-        self.brands.load(self.afterLoad);
-        self.plateforms.load(self.afterLoad);
-        self.games.load(self.afterLoad);
+        self.load();
       }, 250);
     },
     navigateTo: function navigateTo(navContext, contextId, contextUrl, contextExtras, callback) {
@@ -22916,7 +23133,7 @@ webpackContext.id = 132;
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
 /******/ 	__webpack_require__.O(undefined, [216], () => (__webpack_require__(3979)))
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, [216], () => (__webpack_require__(910)))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, [216], () => (__webpack_require__(7844)))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

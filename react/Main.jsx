@@ -90,6 +90,23 @@ const RootStore = types
 			});
 		},
 
+		load: () => {
+			self.brands.load(self.afterLoad);
+			self.plateforms.load(self.afterLoad);
+			self.games.load(self.afterLoad);
+		},
+
+		reload: () => {
+			self.brands.setField('loaded', false);
+			self.plateforms.setField('loaded', false);
+			self.games.setField('loaded', false);
+
+			self.loaded = false;
+
+			self.library.load();
+			self.load();
+		},
+
 		update: (datas) => {
 
 			// VGM-specific init datas
@@ -98,9 +115,7 @@ const RootStore = types
 			self.library.load();
 
 			setTimeout(() => {
-				self.brands.load(self.afterLoad);
-				self.plateforms.load(self.afterLoad);
-				self.games.load(self.afterLoad);
+				self.load();
 			}, 250);
 		},
 
