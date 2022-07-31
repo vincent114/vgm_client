@@ -19,7 +19,14 @@ import './Plateform.css';
 const TAG_PlateformStore = () => {}
 export const PlateformStore = types
 	.model({
+		id: types.maybeNull(types.string),
+		name: types.maybeNull(types.string),
+		nickname: types.maybeNull(types.string),
+		logo: types.maybeNull(types.string),
+		cover_shape: types.maybeNull(types.string),
 
+		plateform_id: types.maybeNull(types.string),
+		game_ids: types.optional(types.array(types.string), []),
 	})
 	.actions(self => ({
 
@@ -50,6 +57,9 @@ export const PlateformHeaderLeft = observer((props) => {
 	return (
 		<HeaderTitle
 			title="Plateforme"
+			titleStyle={{
+				marginLeft: '10px',
+			}}
 		/>
 	)
 })

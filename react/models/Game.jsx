@@ -13,7 +13,22 @@ import clsx from 'clsx';
 const TAG_GameStore = () => {}
 export const GameStore = types
 	.model({
+		id: types.maybeNull(types.string),
+		name: types.maybeNull(types.string),
+		release_date: types.maybeNull(types.string),
+		genre: types.maybeNull(types.string),
 
+		cover: types.maybeNull(types.string),
+		background: types.maybeNull(types.string),
+
+		disc_status: types.maybeNull(types.string),
+		store_status: types.maybeNull(types.string),
+		optimisation_status: types.maybeNull(types.string),
+
+		hidden: false,
+		pinned: false,
+
+		tags: types.optional(types.array(types.string), []),
 	})
 	.actions(self => ({
 

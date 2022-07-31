@@ -1,13 +1,15 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 1175:
+/***/ 910:
 /***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
 
 "use strict";
 
 // UNUSED EXPORTS: RootStoreContext, rootStore
 
+// EXTERNAL MODULE: ../../nexus/react/node_modules/core-js/modules/web.timers.js
+var web_timers = __webpack_require__(6213);
 // EXTERNAL MODULE: ../../nexus/react/node_modules/react/index.js
 var react = __webpack_require__(3354);
 // EXTERNAL MODULE: ../../nexus/react/node_modules/react-dom/index.js
@@ -26,8 +28,6 @@ var es_array_includes = __webpack_require__(368);
 var es_array_index_of = __webpack_require__(6265);
 // EXTERNAL MODULE: ../../nexus/react/node_modules/core-js/modules/es.object.keys.js
 var es_object_keys = __webpack_require__(6627);
-// EXTERNAL MODULE: ../../nexus/react/node_modules/core-js/modules/web.timers.js
-var web_timers = __webpack_require__(6213);
 // EXTERNAL MODULE: ../../nexus/react/node_modules/core-js/modules/es.array.splice.js
 var es_array_splice = __webpack_require__(9343);
 // EXTERNAL MODULE: ../../nexus/react/node_modules/core-js/modules/es.array.concat.js
@@ -20866,7 +20866,13 @@ var Brand = __webpack_require__(5182);
 
 var TAG_BrandStore = function TAG_BrandStore() {};
 
-var BrandStore = mobx_state_tree_module/* types.model */.V5.model({}).actions(function (self) {
+var BrandStore = mobx_state_tree_module/* types.model */.V5.model({
+  id: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  name: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  logo: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  idx: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.integer */.V5.integer),
+  plateform_ids: mobx_state_tree_module/* types.optional */.V5.optional(mobx_state_tree_module/* types.array */.V5.array(mobx_state_tree_module/* types.string */.V5.string), [])
+}).actions(function (self) {
   return {
     setField: function setField(field, value) {
       self[field] = value;
@@ -20886,7 +20892,10 @@ var BrandHeaderLeft = (0,es/* observer */.Pi)(function (props) {
   // ==================================================================================================
 
   return /*#__PURE__*/react.createElement(HeaderTitle, {
-    title: "Marque"
+    title: "Marque",
+    titleStyle: {
+      marginLeft: '10px'
+    }
   });
 }); // ***** BrandHeaderRight *****
 // ****************************
@@ -20935,6 +20944,8 @@ var Brands = __webpack_require__(4993);
 
 
 
+
+
  // Models
 // ======================================================================================================
 // ***** BrandsStore *****
@@ -20945,10 +20956,49 @@ var TAG_BrandsStore = function TAG_BrandsStore() {};
 var BrandsStore = mobx_state_tree_module/* types.model */.V5.model({
   by_id: mobx_state_tree_module/* types.map */.V5.map(BrandStore),
   loaded: false
+}).views(function (self) {
+  return {
+    get collectionFilePath() {
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var library = store.library;
+      var path = ipc.sendSync('pathJoin', [library.collectionPath, 'brands.json']);
+      return path;
+    }
+
+  };
 }).actions(function (self) {
   return {
     setField: function setField(field, value) {
       self[field] = value;
+    },
+    // -
+    load: function load(callback) {
+      // Chargement des marques
+      // ---
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var app = store.app;
+      app.readJsonFile(self.collectionFilePath, {
+        by_id: {}
+      }, function (raw) {
+        app.saveValue(['brands', 'by_id'], raw.by_id, function () {
+          self.setField('loaded', true);
+
+          if (callback) {
+            callback();
+          }
+        });
+      }, app.debugMode);
+    },
+    save: function save(callback) {
+      // Sauvegarde des marques
+      // ---
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var app = store.app;
+      app.writeJsonFile(self.collectionFilePath, self.toJSON());
+
+      if (callback) {
+        callback();
+      }
     }
   };
 }); // Functions Components ReactJS
@@ -20965,7 +21015,10 @@ var BrandsHeaderLeft = (0,es/* observer */.Pi)(function (props) {
   // ==================================================================================================
 
   return /*#__PURE__*/react.createElement(HeaderTitle, {
-    title: "Ludoth\xE8que"
+    title: "Ludoth\xE8que",
+    titleStyle: {
+      marginLeft: '10px'
+    }
   });
 }); // ***** BrandsHeaderRight *****
 // *****************************
@@ -21045,7 +21098,15 @@ var Plateform = __webpack_require__(484);
 
 var TAG_PlateformStore = function TAG_PlateformStore() {};
 
-var PlateformStore = mobx_state_tree_module/* types.model */.V5.model({}).actions(function (self) {
+var PlateformStore = mobx_state_tree_module/* types.model */.V5.model({
+  id: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  name: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  nickname: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  logo: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  cover_shape: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  plateform_id: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  game_ids: mobx_state_tree_module/* types.optional */.V5.optional(mobx_state_tree_module/* types.array */.V5.array(mobx_state_tree_module/* types.string */.V5.string), [])
+}).actions(function (self) {
   return {
     setField: function setField(field, value) {
       self[field] = value;
@@ -21065,7 +21126,10 @@ var PlateformHeaderLeft = (0,es/* observer */.Pi)(function (props) {
   // ==================================================================================================
 
   return /*#__PURE__*/react.createElement(HeaderTitle, {
-    title: "Plateforme"
+    title: "Plateforme",
+    titleStyle: {
+      marginLeft: '10px'
+    }
   });
 }); // ***** PlateformHeaderRight *****
 // ********************************
@@ -21331,6 +21395,8 @@ var SearchPage = (0,es/* observer */.Pi)(function (props) {
 
 
 
+
+
  // Models
 // ======================================================================================================
 // ***** PlateformsStore *****
@@ -21341,10 +21407,144 @@ var TAG_PlateformsStore = function TAG_PlateformsStore() {};
 var PlateformsStore = mobx_state_tree_module/* types.model */.V5.model({
   by_id: mobx_state_tree_module/* types.map */.V5.map(PlateformStore),
   loaded: false
+}).views(function (self) {
+  return {
+    get collectionFilePath() {
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var library = store.library;
+      var path = ipc.sendSync('pathJoin', [library.collectionPath, 'plateforms.json']);
+      return path;
+    }
+
+  };
 }).actions(function (self) {
   return {
     setField: function setField(field, value) {
       self[field] = value;
+    },
+    // -
+    load: function load(callback) {
+      // Chargement des plateformes
+      // ---
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var app = store.app;
+      app.readJsonFile(self.collectionFilePath, {
+        by_id: {}
+      }, function (raw) {
+        app.saveValue(['plateforms', 'by_id'], raw.by_id, function () {
+          self.setField('loaded', true);
+
+          if (callback) {
+            callback();
+          }
+        });
+      });
+    },
+    save: function save(callback) {
+      // Sauvegarde des plateformes
+      // ---
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var app = store.app;
+      app.writeJsonFile(self.collectionFilePath, self.toJSON());
+
+      if (callback) {
+        callback();
+      }
+    }
+  };
+});
+;// CONCATENATED MODULE: ./models/Game.jsx
+
+
+
+ // Models
+// ======================================================================================================
+// ***** GameStore *****
+// *********************
+
+var TAG_GameStore = function TAG_GameStore() {};
+
+var GameStore = mobx_state_tree_module/* types.model */.V5.model({
+  id: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  name: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  release_date: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  genre: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  cover: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  background: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  disc_status: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  store_status: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  optimisation_status: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  hidden: false,
+  pinned: false,
+  tags: mobx_state_tree_module/* types.optional */.V5.optional(mobx_state_tree_module/* types.array */.V5.array(mobx_state_tree_module/* types.string */.V5.string), [])
+}).actions(function (self) {
+  return {
+    setField: function setField(field, value) {
+      self[field] = value;
+    }
+  };
+});
+;// CONCATENATED MODULE: ./models/Games.jsx
+
+
+
+
+
+
+
+ // Models
+// ======================================================================================================
+// ***** GamesStore *****
+// **********************
+
+var TAG_GamesStore = function TAG_GamesStore() {};
+
+var GamesStore = mobx_state_tree_module/* types.model */.V5.model({
+  by_id: mobx_state_tree_module/* types.map */.V5.map(GameStore),
+  loaded: false
+}).views(function (self) {
+  return {
+    get collectionFilePath() {
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var library = store.library;
+      var path = ipc.sendSync('pathJoin', [library.collectionPath, 'games.json']);
+      return path;
+    }
+
+  };
+}).actions(function (self) {
+  return {
+    setField: function setField(field, value) {
+      self[field] = value;
+    },
+    // -
+    load: function load(callback) {
+      // Chargement des jeux
+      // ---
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var app = store.app;
+      app.readJsonFile(self.collectionFilePath, {
+        by_id: {}
+      }, function (raw) {
+        app.saveValue(['games', 'by_id'], raw.by_id, function () {
+          self.setField('loaded', true);
+
+          if (callback) {
+            callback();
+          }
+        });
+      });
+    },
+    save: function save(callback) {
+      // Sauvegarde des jeux
+      // ---
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var app = store.app;
+      app.writeJsonFile(self.collectionFilePath, self.toJSON());
+
+      if (callback) {
+        callback();
+      }
     }
   };
 });
@@ -21384,6 +21584,9 @@ var Admin_AdminPage = (0,es/* observer */.Pi)(function (props) {
 
 
 
+
+
+
  // Models
 // ======================================================================================================
 // ***** LibraryStore *****
@@ -21392,20 +21595,100 @@ var Admin_AdminPage = (0,es/* observer */.Pi)(function (props) {
 var TAG_LibraryStore = function TAG_LibraryStore() {};
 
 var LibraryStore = mobx_state_tree_module/* types.model */.V5.model({
+  path_to_use: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  // default, custom
+  custom_path: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  custom_path_available: true,
   loaded: false
+}).views(function (self) {
+  return {
+    get defaultCollectionPath() {
+      var cwd = ipc.sendSync('getCwd');
+      return ipc.sendSync('pathJoin', [cwd, 'collection']);
+    },
+
+    get defaultCollectionCoversPath() {
+      var path = ipc.sendSync('pathJoin', [self.defaultCollectionPath, 'covers']);
+      return path;
+    },
+
+    // -
+    get collectionPath() {
+      if (self.custom_path && self.custom_path_available) {
+        return self.custom_path;
+      } else {
+        return self.defaultCollectionPath;
+      }
+    },
+
+    get collectionCoversPath() {
+      var path = ipc.sendSync('pathJoin', [self.collectionPath, 'covers']);
+      return path;
+    }
+
+  };
 }).actions(function (self) {
   return {
     setField: function setField(field, value) {
       self[field] = value;
     },
     // -
-    update: function update(raw) {},
-    load: function load() {}
+    refreshAvailability: function refreshAvailability() {
+      // Le chemin personnalisé de la collection est-il toujours accessible ?
+      // ---
+      if (!self.custom_path) {
+        return;
+      }
+
+      if (ipc.sendSync('existsSync', self.custom_path)) {
+        self.custom_path_available = true;
+      } else {
+        self.custom_path_available = false;
+      }
+    },
+    update: function update(raw) {
+      self.path_to_use = raw.path_to_use ? raw.path_to_use : "default";
+      self.custom_path = raw.custom_path;
+      self.custom_path_available = raw.custom_path_available;
+      self.loaded = true;
+    },
+    load: function load() {
+      // Chargement des paramètres de la ludothèque
+      // ---
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var app = store.app;
+      var params = Storage_getFromStorage('params', null, 'json');
+
+      if (!params) {
+        self.save();
+      }
+
+      self.update(params);
+      ipc.sendSync('mkdirsSync', self.defaultCollectionPath);
+      ipc.sendSync('mkdirsSync', self.defaultCollectionCoversPath);
+      self.refreshAvailability();
+
+      if (self.custom_path && self.custom_path_available) {
+        ipc.sendSync('mkdirsSync', self.collectionCoversPath);
+      }
+    },
+    save: function save(callback) {
+      // Sauvegarde des paramètres de la ludothèque
+      // ---
+      var params = self.toJSON();
+      Storage_setToStorage('params', params, 'json');
+
+      if (callback) {
+        callback();
+      }
+    }
   };
 });
 // EXTERNAL MODULE: ./Main.css
 var Main = __webpack_require__(1729);
 ;// CONCATENATED MODULE: ./Main.jsx
+
+
 
 
 
@@ -21442,16 +21725,54 @@ var RootStore = mobx_state_tree_module/* types.model */.V5.model({
   brandId: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
   plateforms: mobx_state_tree_module/* types.optional */.V5.optional(PlateformsStore, {}),
   plateformId: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  games: mobx_state_tree_module/* types.optional */.V5.optional(GamesStore, {}),
   // -
   library: mobx_state_tree_module/* types.optional */.V5.optional(LibraryStore, {}),
   // -
   loaded: false
 }).actions(function (self) {
   return {
+    afterLoad: function afterLoad() {
+      // La bibliothèque est-elle entièrement chargée ?
+      // ---
+      var app = self.app;
+
+      if (!self.library.loaded) {
+        return;
+      }
+
+      if (!self.brands.loaded) {
+        return;
+      }
+
+      if (!self.plateforms.loaded) {
+        return;
+      }
+
+      if (!self.games.loaded) {
+        return;
+      }
+
+      self.loaded = true;
+      app.removeTask('load_library'); // A l'écoute des commandes en provenance des menus de l'OS
+      // -
+
+      ipc.on('about', function (datas) {
+        app.navigateTo('about');
+      });
+      ipc.on('admin', function (datas) {
+        app.navigateTo('admin');
+      });
+    },
     update: function update(datas) {
       // VGM-specific init datas
       // ---
-      console.log(datas);
+      self.library.load();
+      setTimeout(function () {
+        self.brands.load(self.afterLoad);
+        self.plateforms.load(self.afterLoad);
+        self.games.load(self.afterLoad);
+      }, 250);
     },
     navigateTo: function navigateTo(navContext, contextId, contextUrl, contextExtras, callback) {
       // VGM own navigation function
@@ -21548,6 +21869,7 @@ var rootStore = RootStore.create(initSnapshot);
 var RootStoreContext = /*#__PURE__*/react.createContext(rootStore);
 window.store = rootStore;
 window.storeContext = RootStoreContext;
+Storage_setToStorage('debugMode', true, 'bool');
 var staticRaw = {
   'smap': Datas_copyObj(services_STATIC_SMAP)
 };
@@ -22594,7 +22916,7 @@ webpackContext.id = 132;
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
 /******/ 	__webpack_require__.O(undefined, [216], () => (__webpack_require__(3979)))
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, [216], () => (__webpack_require__(1175)))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, [216], () => (__webpack_require__(910)))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

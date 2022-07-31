@@ -19,7 +19,13 @@ import './Brand.css';
 const TAG_BrandStore = () => {}
 export const BrandStore = types
 	.model({
+		id: types.maybeNull(types.string),
+		name: types.maybeNull(types.string),
+		logo: types.maybeNull(types.string),
 
+		idx: types.maybeNull(types.integer),
+
+		plateform_ids: types.optional(types.array(types.string), []),
 	})
 	.actions(self => ({
 
@@ -50,6 +56,9 @@ export const BrandHeaderLeft = observer((props) => {
 	return (
 		<HeaderTitle
 			title="Marque"
+			titleStyle={{
+				marginLeft: '10px',
+			}}
 		/>
 	)
 })

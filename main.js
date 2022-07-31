@@ -10,6 +10,7 @@ const {
 } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const path = require('path');
+const fs = require('fs-extra');
 const os = require('os');
 const package = require('./package.json');
 
@@ -308,6 +309,28 @@ ipcMain.on("existsSync", (event, [fileOrFolderPath]) => {
 
 	event.returnValue = fs.existsSync(fileOrFolderPath);
 });
+
+// ***** json *****
+// ****************
+
+ipcMain.on("readJsonSync", (event, [filePath]) => {
+
+	// Lit et parse le fichier json passé en paramètres
+	// ---
+
+	event.returnValue = fs.readJsonSync(filePath);
+});
+
+ipcMain.on("writeJSONSync", (event, [filePath, datas, options]) => {
+
+	// Ecrit des données dans le fichier passé en paramètres
+	// ---
+
+	options = (options) ? options : {};
+
+	event.returnValue = fs.writeJSONSync(filePath, datas, options);
+});
+
 
 // ***** shell *****
 // *****************

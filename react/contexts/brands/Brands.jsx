@@ -25,10 +25,61 @@ export const BrandsStore = types
 
 		loaded: false,
 	})
+	.views(self => ({
+
+		get collectionFilePath() {
+			const store = getRoot(self);
+			const library = store.library;
+			const path = ipc.sendSync('pathJoin', [library.collectionPath, 'brands.json']);
+			return path;
+		},
+
+	}))
 	.actions(self => ({
 
 		setField: (field, value) => {
 			self[field] = value;
+		},
+
+		// -
+
+		load: (callback) => {
+
+			// Chargement des marques
+			// ---
+
+			const store = getRoot(self);
+			const app = store.app;
+
+			app.readJsonFile(
+				self.collectionFilePath,
+				{
+					by_id: {},
+				},
+				(raw) => {
+					app.saveValue(['brands', 'by_id'], raw.by_id, () => {
+						self.setField('loaded', true);
+						if (callback) {
+							callback();
+						}
+					});
+				},
+				app.debugMode,
+			);
+		},
+
+		save: (callback) => {
+
+			// Sauvegarde des marques
+			// ---
+
+			const store = getRoot(self);
+			const app = store.app;
+			app.writeJsonFile(self.collectionFilePath, self.toJSON());
+
+			if (callback) {
+				callback();
+			}
 		},
 
 	}))
@@ -54,6 +105,9 @@ export const BrandsHeaderLeft = observer((props) => {
 	return (
 		<HeaderTitle
 			title="Ludothèque"
+			titleStyle={{
+				marginLeft: '10px',
+			}}
 		/>
 	)
 })

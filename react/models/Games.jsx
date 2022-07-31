@@ -3,19 +3,19 @@ import { types, getRoot } from "mobx-state-tree";
 import { observer } from "mobx-react-lite";
 import clsx from 'clsx';
 
-import { PlateformStore } from 'vgm_client/contexts/plateform/Plateform';
+import { GameStore } from 'vgm_client/models/Game';
 
 
 // Models
 // ======================================================================================================
 
-// ***** PlateformsStore *****
-// ***************************
+// ***** GamesStore *****
+// **********************
 
-const TAG_PlateformsStore = () => {}
-export const PlateformsStore = types
+const TAG_GamesStore = () => {}
+export const GamesStore = types
 	.model({
-		by_id: types.map(PlateformStore),
+		by_id: types.map(GameStore),
 
 		loaded: false,
 	})
@@ -24,7 +24,7 @@ export const PlateformsStore = types
 		get collectionFilePath() {
 			const store = getRoot(self);
 			const library = store.library;
-			const path = ipc.sendSync('pathJoin', [library.collectionPath, 'plateforms.json']);
+			const path = ipc.sendSync('pathJoin', [library.collectionPath, 'games.json']);
 			return path;
 		},
 
@@ -39,7 +39,7 @@ export const PlateformsStore = types
 
 		load: (callback) => {
 
-			// Chargement des plateformes
+			// Chargement des jeux
 			// ---
 
 			const store = getRoot(self);
@@ -51,7 +51,7 @@ export const PlateformsStore = types
 					by_id: {},
 				},
 				(raw) => {
-					app.saveValue(['plateforms', 'by_id'], raw.by_id, () => {
+					app.saveValue(['games', 'by_id'], raw.by_id, () => {
 						self.setField('loaded', true);
 						if (callback) {
 							callback();
@@ -63,7 +63,7 @@ export const PlateformsStore = types
 
 		save: (callback) => {
 
-			// Sauvegarde des plateformes
+			// Sauvegarde des jeux
 			// ---
 
 			const store = getRoot(self);

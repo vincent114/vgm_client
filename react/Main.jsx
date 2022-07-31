@@ -17,6 +17,7 @@ import { BrandsStore, BrandsPage } from 'vgm_client/contexts/brands/Brands';
 import { BrandPage } from 'vgm_client/contexts/brand/Brand';
 import { PlateformsStore } from 'vgm_client/models/Plateforms';
 import { PlateformPage } from 'vgm_client/contexts/plateform/Plateform';
+import { GamesStore } from 'vgm_client/models/Games';
 import { AdminPage } from 'vgm_client/contexts/admin/Admin';
 
 import { LibraryStore } from 'vgm_client/models/Library';
@@ -49,6 +50,8 @@ const RootStore = types
 		plateforms: types.optional(PlateformsStore, {}),
 		plateformId: types.maybeNull(types.string),
 
+		games: types.optional(GamesStore, {}),
+
 		// -
 
 		library: types.optional(LibraryStore, {}),
@@ -60,12 +63,45 @@ const RootStore = types
 	})
 	.actions(self => ({
 
+		afterLoad: () => {
+
+			// La bibliothèque est-elle entièrement chargée ?
+			// ---
+
+			const app = self.app;
+
+			if (!self.library.loaded) { return; }
+
+			if (!self.brands.loaded) { return; }
+			if (!self.plateforms.loaded) { return; }
+			if (!self.games.loaded) { return; }
+
+			self.loaded = true;
+			app.removeTask('load_library');
+
+			// A l'écoute des commandes en provenance des menus de l'OS
+			// -
+
+			ipc.on('about', (datas) => {
+				app.navigateTo('about');
+			});
+			ipc.on('admin', (datas) => {
+				app.navigateTo('admin');
+			});
+		},
+
 		update: (datas) => {
 
 			// VGM-specific init datas
 			// ---
 
-			console.log(datas);
+			self.library.load();
+
+			setTimeout(() => {
+				self.brands.load(self.afterLoad);
+				self.plateforms.load(self.afterLoad);
+				self.games.load(self.afterLoad);
+			}, 250);
 		},
 
 		navigateTo: (navContext, contextId, contextUrl, contextExtras, callback) => {
@@ -179,6 +215,8 @@ export const RootStoreContext = React.createContext(rootStore);
 
 window.store = rootStore;
 window.storeContext = RootStoreContext;
+
+setToStorage('debugMode', true, 'bool');
 
 let staticRaw = {
 	'smap': copyObj(STATIC_SMAP),
