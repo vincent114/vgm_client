@@ -31,8 +31,8 @@ export const LibraryStore = types
 			return ipc.sendSync('pathJoin', [cwd, 'collection']);
 		},
 
-		get defaultCollectionCoversPath() {
-			const path = ipc.sendSync('pathJoin', [self.defaultCollectionPath, 'covers']);
+		get defaultCollectionFilesPath() {
+			const path = ipc.sendSync('pathJoin', [self.defaultCollectionPath, 'files']);
 			return path;
 		},
 
@@ -46,8 +46,8 @@ export const LibraryStore = types
 			}
 		},
 
-		get collectionCoversPath() {
-			const path = ipc.sendSync('pathJoin', [self.collectionPath, 'covers']);
+		get collectionFilesPath() {
+			const path = ipc.sendSync('pathJoin', [self.collectionPath, 'files']);
 			return path;
 		},
 
@@ -97,11 +97,11 @@ export const LibraryStore = types
 			self.update(params);
 
 			ipc.sendSync('mkdirsSync', self.defaultCollectionPath);
-			ipc.sendSync('mkdirsSync', self.defaultCollectionCoversPath);
+			ipc.sendSync('mkdirsSync', self.defaultCollectionFilesPath);
 
 			self.refreshAvailability();
 			if (self.custom_path && self.custom_path_available) {
-				ipc.sendSync('mkdirsSync', self.collectionCoversPath);
+				ipc.sendSync('mkdirsSync', self.collectionFilesPath);
 			}
 		},
 

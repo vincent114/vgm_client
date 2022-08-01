@@ -17,6 +17,8 @@ export const PlateformsStore = types
 	.model({
 		by_id: types.map(PlateformStore),
 
+		draft: types.optional(PlateformStore, {}),
+
 		loaded: false,
 	})
 	.views(self => ({
@@ -73,6 +75,24 @@ export const PlateformsStore = types
 			if (callback) {
 				callback();
 			}
+		},
+
+		createNew: (brandId) => {
+
+			// Création d'une nouvelle plateforme
+			// ---
+
+			const store = getRoot(self);
+			const app = store.app;
+			const helpers = app.helpers;
+			const popupEditPlateform = store.popupEditPlateform;
+
+			self.draft = PlateformStore.create({
+				'id': helpers.generateUUID(),
+				'cover_shape': 'vertical',
+				'brand_id': (brandId) ? brandId : '',
+			});
+			popupEditPlateform.open();
 		},
 
 	}))

@@ -21,9 +21,11 @@ export const GameStore = types
 		cover: types.maybeNull(types.string),
 		background: types.maybeNull(types.string),
 
-		disc_status: types.maybeNull(types.string),
-		store_status: types.maybeNull(types.string),
-		optimisation_status: types.maybeNull(types.string),
+		disc_status: types.maybeNull(types.string), // none, shipping, possesed
+		store_status: types.maybeNull(types.string), // none, shipping, possesed
+
+		optimisation_status: types.maybeNull(types.string), // none, partial, full
+		optimisation_date: types.maybeNull(types.string),
 
 		hidden: false,
 		pinned: false,

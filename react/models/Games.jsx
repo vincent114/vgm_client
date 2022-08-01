@@ -17,6 +17,8 @@ export const GamesStore = types
 	.model({
 		by_id: types.map(GameStore),
 
+		draft: types.optional(GameStore, {}),
+
 		loaded: false,
 	})
 	.views(self => ({
@@ -73,6 +75,25 @@ export const GamesStore = types
 			if (callback) {
 				callback();
 			}
+		},
+
+		createNew: () => {
+
+			// Création d'un nouveau jeu
+			// ---
+
+			const store = getRoot(self);
+			const app = store.app;
+			const helpers = app.helpers;
+			const popupEditGame = store.popupEditGame;
+
+			self.draft = GameStore.create({
+				'id': helpers.generateUUID(),
+				'disc_status': 'none',
+				'store_status': 'none',
+				'optimisation_status': 'none',
+			});
+			popupEditGame.open();
 		},
 
 	}))

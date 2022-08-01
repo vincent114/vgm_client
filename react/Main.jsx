@@ -18,9 +18,12 @@ import { BrandPage } from 'vgm_client/contexts/brand/Brand';
 import { PlateformsStore } from 'vgm_client/models/Plateforms';
 import { PlateformPage } from 'vgm_client/contexts/plateform/Plateform';
 import { GamesStore } from 'vgm_client/models/Games';
+import { LibraryStore } from 'vgm_client/models/Library';
 import { AdminPage } from 'vgm_client/contexts/admin/Admin';
 
-import { LibraryStore } from 'vgm_client/models/Library';
+import { PopupEditBrandStore, popupEditBrandKey, PopupEditBrand } from 'vgm_client/popups/edit_brand/PopupEditBrand';
+import { PopupEditPlateformStore, popupEditPlateformKey, PopupEditPlateform } from 'vgm_client/popups/edit_plateform/PopupEditPlateform';
+import { PopupEditGameStore, popupEditGameKey, PopupEditGame } from 'vgm_client/popups/edit_game/PopupEditGame';
 
 import './Main.css';
 
@@ -57,6 +60,10 @@ const RootStore = types
 		library: types.optional(LibraryStore, {}),
 
 		// -
+
+		popupEditBrand: types.optional(PopupEditBrandStore, {}),
+		popupEditPlateform: types.optional(PopupEditPlateformStore, {}),
+		popupEditGame: types.optional(PopupEditGameStore, {}),
 
 		loaded: false,
 
@@ -173,7 +180,11 @@ let contexts = {
 // Popups
 // -
 
-let popups = {}
+let popups = {
+	[popupEditBrandKey]: PopupEditBrand,
+	[popupEditPlateformKey]: PopupEditPlateform,
+	[popupEditGameKey]: PopupEditGame,
+}
 
 // Routes
 // -

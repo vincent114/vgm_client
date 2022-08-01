@@ -23,9 +23,9 @@ export const PlateformStore = types
 		name: types.maybeNull(types.string),
 		nickname: types.maybeNull(types.string),
 		logo: types.maybeNull(types.string),
-		cover_shape: types.maybeNull(types.string),
+		cover_shape: types.maybeNull(types.string), // vertical, horizontal, square
 
-		plateform_id: types.maybeNull(types.string),
+		brand_id: types.maybeNull(types.string),
 		game_ids: types.optional(types.array(types.string), []),
 	})
 	.actions(self => ({

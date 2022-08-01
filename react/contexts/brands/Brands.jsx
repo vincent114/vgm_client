@@ -5,9 +5,11 @@ import clsx from 'clsx';
 
 import { BrandStore } from 'vgm_client/contexts/brand/Brand';
 
-import { Helper } from 'nexus/ui/helper/Helper';
 import { HeaderTitle } from 'nexus/layout/header/Header';
 import { MenuItem } from 'nexus/layout/menu/Menu';
+
+import { Helper } from 'nexus/ui/helper/Helper';
+import { IconButton } from 'nexus/ui/button/Button';
 
 import './Brands.css';
 
@@ -23,6 +25,8 @@ export const BrandsStore = types
 	.model({
 		by_id: types.map(BrandStore),
 
+		draft: types.optional(BrandStore, {}),
+
 		loaded: false,
 	})
 	.views(self => ({
@@ -34,11 +38,22 @@ export const BrandsStore = types
 			return path;
 		},
 
+		get filesFolderPath() {
+			const store = getRoot(self);
+			const library = store.library;
+			const path = ipc.sendSync('pathJoin', [library.collectionFilesPath, 'brands']);
+			return path;
+		},
+
 	}))
 	.actions(self => ({
 
 		setField: (field, value) => {
 			self[field] = value;
+		},
+
+		setBrand: (brand) => {
+			self.by_id.set(brand.id, BrandStore.create(brand.toJSON()));
 		},
 
 		// -
@@ -82,6 +97,24 @@ export const BrandsStore = types
 			}
 		},
 
+		createNew: () => {
+
+			// Création d'une nouvelle marque
+			// ---
+
+			const store = getRoot(self);
+			const app = store.app;
+			const helpers = app.helpers;
+			const popupEditBrand = store.popupEditBrand;
+
+			self.draft = BrandStore.create({
+				'id': helpers.generateUUID(),
+				'idx': 0,
+			});
+			popupEditBrand.setField('brandId', '');
+			popupEditBrand.open();
+		},
+
 	}))
 
 
@@ -104,7 +137,7 @@ export const BrandsHeaderLeft = observer((props) => {
 
 	return (
 		<HeaderTitle
-			title="Ludothèque"
+			title="Marques"
 			titleStyle={{
 				marginLeft: '10px',
 			}}
@@ -118,15 +151,31 @@ export const BrandsHeaderLeft = observer((props) => {
 const TAG_BrandsHeaderRight = () => {}
 export const BrandsHeaderRight = observer((props) => {
 
-	// const store = React.useContext(window.storeContext);
-	// const app = store.app;
+	const store = React.useContext(window.storeContext);
+	const app = store.app;
+	const brands = store.brands;
 
 	// ...
+
+	// Events
+	// ==================================================================================================
+
+	const handleAddBrand = () => {
+		brands.createNew();
+	}
 
 	// Render
 	// ==================================================================================================
 
-	return null;
+	return (
+		<React.Fragment>
+			<IconButton
+				iconName="add"
+				color="#FFFFFF"
+				onClick={handleAddBrand}
+			/>
+		</React.Fragment>
+	)
 })
 
 // ***** BrandsMenuItem *****

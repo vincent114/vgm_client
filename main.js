@@ -310,6 +310,14 @@ ipcMain.on("existsSync", (event, [fileOrFolderPath]) => {
 	event.returnValue = fs.existsSync(fileOrFolderPath);
 });
 
+ipcMain.on("copySync", (event, [params]) => {
+
+	// Copie de fichier
+	// ---
+
+	event.returnValue = fs.copySync(params.source, params.target);
+});
+
 // ***** json *****
 // ****************
 
