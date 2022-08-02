@@ -29,6 +29,41 @@ export const BrandStore = types
 
 		plateform_ids: types.optional(types.array(types.string), []),
 	})
+	.views(self => ({
+
+		get nbPlateforms() {
+			return self.plateform_ids.length;
+		},
+
+		get subtitle() {
+			const nbPlateforms = self.nbPlateforms;
+			return `${nbPlateforms} ${(nbPlateforms > 1) ? "plateformes" : "plateforme"}`
+		},
+
+		// -
+
+		get plateforms() {
+			const store = getRoot(self);
+			const plateforms = store.plateforms;
+
+			let plateformsList = [];
+			for (const plateformId of self.plateform_ids) {
+				const plateform = plateforms.by_id.get(plateformId);
+				if (plateform) {
+					plateformsList.push(plateform);
+				}
+			}
+			plateformsList.sort(function (a, b) {
+				if (a.name > b.name)
+					return 1;
+				if (a.name < b.name)
+					return -1;
+				return 0;
+			});
+			return plateformsList;
+		},
+
+	}))
 	.actions(self => ({
 
 		setField: (field, value) => {

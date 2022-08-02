@@ -24,6 +24,11 @@ import { AdminPage } from 'vgm_client/contexts/admin/Admin';
 import { PopupEditBrandStore, popupEditBrandKey, PopupEditBrand } from 'vgm_client/popups/edit_brand/PopupEditBrand';
 import { PopupEditPlateformStore, popupEditPlateformKey, PopupEditPlateform } from 'vgm_client/popups/edit_plateform/PopupEditPlateform';
 import { PopupEditGameStore, popupEditGameKey, PopupEditGame } from 'vgm_client/popups/edit_game/PopupEditGame';
+import {
+	PopupJumpToStore,
+	popupJumpToKey,
+	PopupJumpTo
+} from 'nexus/popups/jump_to/PopupJumpTo';
 
 import './Main.css';
 
@@ -64,6 +69,7 @@ const RootStore = types
 		popupEditBrand: types.optional(PopupEditBrandStore, {}),
 		popupEditPlateform: types.optional(PopupEditPlateformStore, {}),
 		popupEditGame: types.optional(PopupEditGameStore, {}),
+		popupJumpTo: types.optional(PopupJumpToStore, {}),
 
 		loaded: false,
 
@@ -184,6 +190,7 @@ let popups = {
 	[popupEditBrandKey]: PopupEditBrand,
 	[popupEditPlateformKey]: PopupEditPlateform,
 	[popupEditGameKey]: PopupEditGame,
+	[popupJumpToKey]: PopupJumpTo,
 }
 
 // Routes

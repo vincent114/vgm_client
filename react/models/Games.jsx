@@ -30,6 +30,13 @@ export const GamesStore = types
 			return path;
 		},
 
+		get filesFolderPath() {
+			const store = getRoot(self);
+			const library = store.library;
+			const path = ipc.sendSync('pathJoin', [library.collectionFilesPath, 'games']);
+			return path;
+		},
+
 	}))
 	.actions(self => ({
 
@@ -94,6 +101,24 @@ export const GamesStore = types
 				'optimisation_status': 'none',
 			});
 			popupEditGame.open();
+		},
+
+		delete: (gameId) => {
+
+			// Suppression du jeu passé en paramètres
+			// ---
+
+			const game = self.by_id.get(gameId);
+			if (game) {
+
+				// Nettoyage de la couverture
+				game.cover.deleteFromDisk(self.filesFolderPath);
+
+				// Nettoyage de l'image de fond
+				game.background.deleteFromDisk(self.filesFolderPath);
+
+				self.by_id.delete(gameId);
+			}
 		},
 
 	}))

@@ -34,19 +34,21 @@ export const PopupEditBrandStore = types
 		get brand() {
 			const store = getRoot(self);
 			const brands = store.brands;
-			if (self.brandId) {
-				return brands.by_id.get(self.brandId);
-			} else {
-				return brands.draft;
-			}
+			// if (self.brandId) {
+			// 	return brands.by_id.get(self.brandId);
+			// } else {
+			// 	return brands.draft;
+			// }
+			return brands.draft;
 		},
 
 		get baseSavePath() {
-			if (self.brandId) {
-				return ['brands', 'by_id', self.brandId];
-			} else {
-				return ['brands', 'draft'];
-			}
+			// if (self.brandId) {
+			// 	return ['brands', 'by_id', self.brandId];
+			// } else {
+			// 	return ['brands', 'draft'];
+			// }
+			return ['brands', 'draft'];
 		},
 
 		// Getters
@@ -99,7 +101,7 @@ export const PopupEditBrandStore = types
 				}
 
 				// Existe déjà ?
-				if (brand.id && brands.by_id.has(brand.id)) {
+				if (!self.brandId && brand.id && brands.by_id.has(brand.id)) {
 					errors.push(app.addError(
 						self.getSavePath(['name']),
 						"Existe déjà.",
@@ -121,19 +123,17 @@ export const PopupEditBrandStore = types
 			const store = getRoot(self);
 			const app = store.app;
 			const brands = store.brands;
-			const brandId = self.brandId;
-			const brand = self.brand;
+			const draft = brands.draft;
 
 			// Sauvegarde de l'image sur le disque
-			if (brand.logo.file) {
-				brand.logo.setField('id', brand.id);
-				brand.logo.saveToDisk(brands.filesFolderPath);
+			if (draft.logo.file) {
+				draft.logo.setField('id', draft.id);
+				draft.logo.saveToDisk(brands.filesFolderPath);
+				draft.logo.setField('base64', '');
 			}
 
-			if (!brandId) {
-				// brands.setBrand(brand);
-			}
-			// brands.save();
+			brands.setBrand(draft);
+			brands.save();
 		},
 
 		// -
@@ -252,6 +252,7 @@ export const PopupEditBrand = observer((props) => {
 							id="img-brand-logo"
 							component='input'
 							label="Logo"
+							filesFolderPath={brands.filesFolderPath}
 							savePath={brandLogoSavePath}
 							disabled={isLoading}
 						/>

@@ -1,7 +1,7 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 16101:
+/***/ 61983:
 /***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -542,7 +542,7 @@ function Datas_arrayLikeToArray(arr, len) { if (len == null || len > arr.length)
 
 // Datas
 // ======================================================================================================
-var LETTERS = (/* unused pure expression or super */ null && (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']));
+var LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 var NUMBERS = (/* unused pure expression or super */ null && (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']));
 var LIBRARY_TARGET_CHOICES = [{
   "value": "default",
@@ -21003,15 +21003,25 @@ var ImageStore = mobx_state_tree_module/* types.model */.V5.model({
   file: mobx_state_tree_module/* types.frozen */.V5.frozen(null)
 }).views(function (self) {
   return {
-    get url() {
-      // TODO
-      return "";
+    // Getters
+    // -
+    getUrl: function getUrl() {
+      var targetPath = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var app = store.app;
+      var appKind = app.kind;
+
+      if (appKind == 'electron' && self.id && self.ext) {
+        return ipc.sendSync('pathJoin', [targetPath, "".concat(self.id, ".").concat(self.ext)]);
+      }
+
+      return self.base64 ? self.base64 : "";
     },
 
     // Bools
     // -
     get isSet() {
-      if (self.base64) {
+      if (self.base64 || self.id && self.ext) {
         return true;
       }
 
@@ -21065,11 +21075,22 @@ var ImageStore = mobx_state_tree_module/* types.model */.V5.model({
       }
 
       var source = self.file.path;
-      var target = ipc.sendSync('pathJoin', [targetPath, "".concat(self.id, ".").concat(self.ext)]);
+      var target = self.getUrl(targetPath);
       ipc.sendSync('copySync', {
         'source': source,
         'target': target
       });
+      self.file = null;
+    },
+    deleteFromDisk: function deleteFromDisk(targetPath) {
+      // Apps Electron :: Suppression du fichier sauvegardé
+      // ---
+      var target = self.getUrl(targetPath);
+
+      if (target) {
+        ipc.sendSync('removeSync', target);
+        self.unset();
+      }
     }
   };
 }); // Functions Components ReactJS
@@ -21093,6 +21114,7 @@ var ImageDropzone = (0,es/* observer */.Pi)(function (props) {
   var id = props.id ? props.id : uuid();
   var label = props.label;
   var disabled = props.disabled == true ? true : false;
+  var filesFolderPath = props.filesFolderPath;
   var savePath = props.savePath;
   var className = props.className ? "".concat(props.className) : '';
   var style = props.style ? helpers.copyObj(props.style) : {}; // Functions
@@ -21128,7 +21150,8 @@ var ImageDropzone = (0,es/* observer */.Pi)(function (props) {
 
 
   var error = getError();
-  var image = getImage(); // Events
+  var image = getImage();
+  var imageUrl = image.getUrl(filesFolderPath); // Events
   // ==================================================================================================
 
   var handleMenuClick = function handleMenuClick(evt) {
@@ -21211,7 +21234,7 @@ var ImageDropzone = (0,es/* observer */.Pi)(function (props) {
     size: "thumbnail",
     color: "default"
   }), image && image.isSet && /*#__PURE__*/react.createElement("img", {
-    src: image.base64
+    src: imageUrl
   }), /*#__PURE__*/react.createElement("input", {
     accept: "image/*",
     capture: null,
@@ -21261,6 +21284,26 @@ var ImageDropzone = (0,es/* observer */.Pi)(function (props) {
 // EXTERNAL MODULE: ./contexts/brand/Brand.css
 var Brand = __webpack_require__(65182);
 ;// CONCATENATED MODULE: ./contexts/brand/Brand.jsx
+function Brand_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = Brand_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function Brand_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return Brand_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return Brand_arrayLikeToArray(o, minLen); }
+
+function Brand_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21282,6 +21325,50 @@ var BrandStore = mobx_state_tree_module/* types.model */.V5.model({
   logo: mobx_state_tree_module/* types.optional */.V5.optional(ImageStore, {}),
   idx: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.integer */.V5.integer),
   plateform_ids: mobx_state_tree_module/* types.optional */.V5.optional(mobx_state_tree_module/* types.array */.V5.array(mobx_state_tree_module/* types.string */.V5.string), [])
+}).views(function (self) {
+  return {
+    get nbPlateforms() {
+      return self.plateform_ids.length;
+    },
+
+    get subtitle() {
+      var nbPlateforms = self.nbPlateforms;
+      return "".concat(nbPlateforms, " ").concat(nbPlateforms > 1 ? "plateformes" : "plateforme");
+    },
+
+    // -
+    get plateforms() {
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var plateforms = store.plateforms;
+      var plateformsList = [];
+
+      var _iterator = Brand_createForOfIteratorHelper(self.plateform_ids),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var plateformId = _step.value;
+          var plateform = plateforms.by_id.get(plateformId);
+
+          if (plateform) {
+            plateformsList.push(plateform);
+          }
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      plateformsList.sort(function (a, b) {
+        if (a.name > b.name) return 1;
+        if (a.name < b.name) return -1;
+        return 0;
+      });
+      return plateformsList;
+    }
+
+  };
 }).actions(function (self) {
   return {
     setField: function setField(field, value) {
@@ -21342,9 +21429,308 @@ var BrandPage = (0,es/* observer */.Pi)(function (props) {
     className: "nx-page"
   }, renderHelper());
 });
+// EXTERNAL MODULE: ../../nexus/react/ui/paper/Paper.css
+var Paper = __webpack_require__(19393);
+;// CONCATENATED MODULE: ../../nexus/react/ui/paper/Paper.jsx
+
+
+
+
+ // Functions Components ReactJS
+// -------------------------------------------------------------------------------------------------------------
+// ***** Paper *****
+// *****************
+
+var TAG_Paper = function TAG_Paper() {};
+
+var Paper_Paper = function Paper(props) {
+  // From ... props
+  var hoverable = props.hoverable == true ? true : false;
+  var children = props.children;
+  var _onMouseEnter = props.onMouseEnter;
+  var _onMouseLeave = props.onMouseLeave;
+  var _onClick = props.onClick;
+  var className = props.className ? props.className : '';
+  var style = props.style ? props.style : {}; // Render
+  // ==================================================================================================
+
+  return /*#__PURE__*/react.createElement("div", {
+    className: (0,clsx_m/* default */.Z)("nx-paper", {
+      "hoverable": hoverable
+    }, className),
+    style: style,
+    onMouseEnter: function onMouseEnter(e) {
+      if (_onMouseEnter) {
+        _onMouseEnter(e);
+      }
+    },
+    onMouseLeave: function onMouseLeave(e) {
+      if (_onMouseLeave) {
+        _onMouseLeave(e);
+      }
+    },
+    onClick: function onClick() {
+      if (_onClick) {
+        _onClick();
+      }
+    }
+  }, children);
+};
+// EXTERNAL MODULE: ../../nexus/react/ui/thumbnail/Thumbnail.css
+var Thumbnail = __webpack_require__(64460);
+;// CONCATENATED MODULE: ../../nexus/react/ui/thumbnail/Thumbnail.jsx
+
+
+
+
+
+
+
+
+
+
+
+
+
+function Thumbnail_slicedToArray(arr, i) { return Thumbnail_arrayWithHoles(arr) || Thumbnail_iterableToArrayLimit(arr, i) || Thumbnail_unsupportedIterableToArray(arr, i) || Thumbnail_nonIterableRest(); }
+
+function Thumbnail_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function Thumbnail_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return Thumbnail_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return Thumbnail_arrayLikeToArray(o, minLen); }
+
+function Thumbnail_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function Thumbnail_iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function Thumbnail_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+
+
+ // Datas
+// ======================================================================================================
+
+var THUMBNAIL_SIZES = {
+  "fit": {
+    "small": [140],
+    "normal": [200],
+    "large": [400]
+  },
+  "square": {
+    "small": [140, 140],
+    "normal": [200, 200],
+    "large": [400, 400]
+  },
+  "cover": {
+    "small": [110, 110],
+    "normal": [220, 220],
+    "large": [400, 400]
+  }
+}; // Functions Components ReactJS
+// ======================================================================================================
+// ***** Thumbnail *****
+// *********************
+
+var TAG_Thumbnail = function TAG_Thumbnail() {};
+
+var Thumbnail_Thumbnail = (0,es/* observer */.Pi)(function (props) {
+  var store = react.useContext(window.storeContext);
+  var app = store.app;
+  var theme = app.theme; // From ... state
+
+  var _React$useState = react.useState(false),
+      _React$useState2 = Thumbnail_slicedToArray(_React$useState, 2),
+      hover = _React$useState2[0],
+      setHover = _React$useState2[1]; // From ... props
+
+
+  var src = props.src ? props.src : "";
+  var iconName = props.iconName ? props.iconName : "";
+  var title = props.title ? props.title : "";
+  var subtitle = props.subtitle ? props.subtitle : "";
+  var variant = props.variant ? props.variant : "square"; // fit, square, cover
+
+  var size = props.size ? props.size : "normal"; // small, normal, large
+
+  var disabled = props.disabled == true ? true : false;
+  var bottomRight = props.bottomRight;
+  var bottomLeft = props.bottomLeft;
+  var callbackEnter = props.callbackEnter;
+  var callbackLeave = props.callbackLeave;
+  var callbackClick = props.callbackClick;
+  var callbackSubtitle = props.callbackSubtitle;
+  var className = props.className ? props.className : "";
+  var rootStyle = props.rootStyle ? Datas_copyObj(props.rootStyle) : {};
+  var style = props.style ? Datas_copyObj(props.style) : {}; // ...
+
+  style['padding'] = "0px";
+
+  if (hover) {
+    style['boxShadow'] = "0 0 10px ".concat(theme.palette.primary.main);
+  } // Taille
+
+
+  if (!style.hasOwnProperty('width') && !style.hasOwnProperty('height')) {
+    var sizeValues = THUMBNAIL_SIZES[variant][size];
+    style['width'] = "".concat(sizeValues[0], "px");
+
+    if (variant != "fit") {
+      style['height'] = "".concat(sizeValues[1], "px");
+    }
+  } // Image
+
+
+  var imgStyle = {
+    "width": style.width,
+    "height": variant != 'fit' ? style.height : "unset"
+  }; // Footer
+
+  var footerStyle = {
+    "width": style.width
+  }; // Events
+  // ==================================================================================================
+
+  var handleMouseEnter = function handleMouseEnter(evt) {
+    if (!disabled) {
+      setHover(true);
+
+      if (callbackEnter) {
+        callbackEnter(evt);
+      }
+    }
+  };
+
+  var handleMouseLeave = function handleMouseLeave(evt) {
+    setHover(false);
+
+    if (callbackLeave) {
+      callbackLeave(evt);
+    }
+  }; // -
+
+
+  var handleClick = function handleClick() {
+    if (callbackClick) {
+      callbackClick();
+    }
+  };
+
+  var handleSubtitleClick = function handleSubtitleClick(e) {
+    if (callbackSubtitle) {
+      callbackSubtitle(e);
+    }
+  }; // Render
+  // ==================================================================================================
+
+
+  return /*#__PURE__*/react.createElement("div", {
+    className: (0,clsx_m/* default */.Z)("nx-thumbnail", variant, size, {
+      "clickable": callbackClick
+    }, className),
+    style: rootStyle,
+    onMouseEnter: function onMouseEnter(e) {
+      return handleMouseEnter(e);
+    },
+    onMouseLeave: function onMouseLeave(e) {
+      return handleMouseLeave(e);
+    },
+    onClick: function onClick() {
+      return handleClick();
+    }
+  }, /*#__PURE__*/react.createElement(Paper_Paper, {
+    style: style
+  }, !src && iconName && /*#__PURE__*/react.createElement(Icon_Icon, {
+    name: iconName,
+    size: "thumbnail",
+    color: "default"
+  }), src && /*#__PURE__*/react.createElement("img", {
+    src: src,
+    style: imgStyle
+  }), bottomRight && /*#__PURE__*/react.createElement("div", {
+    className: "nx-thumbnail-bottom-right"
+  }, bottomRight), bottomLeft && /*#__PURE__*/react.createElement("div", {
+    className: "nx-thumbnail-bottom-left"
+  }, bottomLeft)), (title || subtitle) && /*#__PURE__*/react.createElement("div", {
+    className: "nx-thumbnail-footer",
+    style: footerStyle
+  }, title && /*#__PURE__*/react.createElement("div", {
+    className: "nx-thumbnail-title"
+  }, title), subtitle && /*#__PURE__*/react.createElement("div", {
+    className: "nx-thumbnail-subtitle",
+    onClick: function onClick(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      handleSubtitleClick(e);
+    }
+  }, subtitle)));
+}); // ***** ThumbnailGhost *****
+// **************************
+
+var TAG_ThumbnailGhost = function TAG_ThumbnailGhost() {};
+
+var ThumbnailGhost = function ThumbnailGhost(props) {
+  // From ... props
+  var variant = props.variant ? props.variant : "square"; // square, cover
+
+  var size = props.size ? props.size : "normal"; // small, normal, large
+
+  var className = props.className ? props.className : "";
+  var style = props.style ? props.style : {}; // ...
+
+  if (!style.hasOwnProperty('width') && !style.hasOwnProperty('height')) {
+    var sizeValues = THUMBNAIL_SIZES[variant][size];
+    style['width'] = "".concat(sizeValues[0], "px");
+    style['height'] = "0px";
+  } // Render
+  // ==================================================================================================
+
+
+  return /*#__PURE__*/react.createElement("div", {
+    className: (0,clsx_m/* default */.Z)("nx-thumbnail", "ghost", variant, size, className),
+    style: style
+  });
+};
 // EXTERNAL MODULE: ./contexts/brands/Brands.css
 var Brands = __webpack_require__(94993);
 ;// CONCATENATED MODULE: ./contexts/brands/Brands.jsx
+function Brands_slicedToArray(arr, i) { return Brands_arrayWithHoles(arr) || Brands_iterableToArrayLimit(arr, i) || Brands_unsupportedIterableToArray(arr, i) || Brands_nonIterableRest(); }
+
+function Brands_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function Brands_iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function Brands_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function Brands_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = Brands_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function Brands_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return Brands_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return Brands_arrayLikeToArray(o, minLen); }
+
+function Brands_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21382,8 +21768,42 @@ var BrandsStore = mobx_state_tree_module/* types.model */.V5.model({
       var library = store.library;
       var path = ipc.sendSync('pathJoin', [library.collectionFilesPath, 'brands']);
       return path;
-    }
+    },
 
+    // -
+    get nbBrands() {
+      return Object.entries(self.by_id.toJSON()).length;
+    },
+
+    // Getters
+    // -
+    getSortedByName: function getSortedByName() {
+      var brandsList = [];
+
+      var _iterator = Brands_createForOfIteratorHelper(self.by_id.entries()),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var _step$value = Brands_slicedToArray(_step.value, 2),
+              brandId = _step$value[0],
+              brand = _step$value[1];
+
+          brandsList.push(brand);
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      brandsList.sort(function (a, b) {
+        if (a.name > b.name) return 1;
+        if (a.name < b.name) return -1;
+        return 0;
+      });
+      return brandsList;
+    }
   };
 }).actions(function (self) {
   return {
@@ -21435,23 +21855,276 @@ var BrandsStore = mobx_state_tree_module/* types.model */.V5.model({
       });
       popupEditBrand.setField('brandId', '');
       popupEditBrand.open();
+    },
+    edit: function edit(brandId) {
+      // Modification de la marque passée en paramètres
+      // ---
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var popupEditBrand = store.popupEditBrand;
+      var brand = self.by_id.get(brandId);
+
+      if (brand) {
+        self.draft = BrandStore.create(brand.toJSON());
+        popupEditBrand.setField('brandId', brandId);
+        popupEditBrand.open();
+      }
+    },
+    "delete": function _delete(brandId) {
+      // Suppression de la marque passée en paramètres
+      // ---
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var plateforms = store.plateforms;
+      var games = store.games;
+      var brand = self.by_id.get(brandId);
+
+      if (brand) {
+        // Suppression logo
+        brand.logo.deleteFromDisk(self.filesFolderPath); // Suppression des plateformes
+
+        var _iterator2 = Brands_createForOfIteratorHelper(brand.plateform_ids),
+            _step2;
+
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var plateformId = _step2.value;
+            plateforms["delete"](plateformId);
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
+
+        self.by_id["delete"](brandId);
+      }
     }
   };
 }); // Functions Components ReactJS
 // ======================================================================================================
-// ***** BrandsHeaderLeft *****
+// ***** BrandThumbnail *****
+// **************************
+
+var TAG_BrandThumbnail = function TAG_BrandThumbnail() {};
+
+var BrandThumbnail = (0,es/* observer */.Pi)(function (props) {
+  var store = react.useContext(window.storeContext);
+  var app = store.app;
+  var snackbar = app.snackbar;
+  var brands = store.brands; // From ... state
+
+  var _React$useState = react.useState(false),
+      _React$useState2 = Brands_slicedToArray(_React$useState, 2),
+      hover = _React$useState2[0],
+      setHover = _React$useState2[1];
+
+  var _React$useState3 = react.useState(null),
+      _React$useState4 = Brands_slicedToArray(_React$useState3, 2),
+      anchorMenu = _React$useState4[0],
+      setAnchorMenu = _React$useState4[1]; // From ... props
+
+
+  var isPlaying = props.isPlaying == true ? true : false;
+  var brand = props.brand;
+  var callbackClick = props.callbackClick;
+  var style = props.style ? props.style : style; // ...
+  // Events
+  // ==================================================================================================
+
+  var handleEnter = function handleEnter(evt) {
+    setHover(true);
+  };
+
+  var handleLeave = function handleLeave(evt) {
+    setHover(false);
+  }; // -
+
+
+  var handleOpenMenu = function handleOpenMenu(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    setAnchorMenu(event.currentTarget);
+  };
+
+  var handleCloseMenu = function handleCloseMenu(evt) {
+    if (evt) {
+      evt.preventDefault();
+      evt.stopPropagation();
+    }
+
+    setAnchorMenu(null);
+  }; // -
+
+
+  var handleEdit = function handleEdit() {
+    brands.edit(brand.id);
+    handleCloseMenu();
+  };
+
+  var handleDelete = function handleDelete() {
+    handleCloseMenu();
+    var CONFIRM_DELETE = "Êtes-vous sûr de vouloir supprimer cette marque ? (cela supprimera toutes les plateformes et jeux associés)";
+
+    if (confirm(CONFIRM_DELETE)) {
+      brands["delete"](brand.id);
+      snackbar.update(true, "Marque supprimée.", "success");
+    }
+  }; // Render
+  // ==================================================================================================
+  // Thumbnail :: Bottom Right
+  // ---------------------------------------------------
+
+
+  var bottomRight = null;
+
+  if (hover) {
+    bottomRight = /*#__PURE__*/react.createElement("div", {
+      className: "flex-0"
+    }, /*#__PURE__*/react.createElement(Avatar_Avatar, {
+      iconName: "more_horiz",
+      iconVariant: "filled" // iconColor="#FFFFFF"
+      ,
+      iconColor: "typography",
+      color: "transparent",
+      size: "tiny",
+      style: {
+        margin: '5px',
+        // opacity: '0.9',
+        stopPropagation: true,
+        backdropFilter: 'blur(4px)'
+      },
+      onClick: function onClick(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        handleOpenMenu(e);
+      }
+    }), /*#__PURE__*/react.createElement(Popover_Popover, {
+      id: "pop-brand-".concat(brand.id),
+      open: Boolean(anchorMenu),
+      anchorEl: anchorMenu,
+      onClose: handleCloseMenu,
+      anchorOrigin: {
+        vertical: 'bottom',
+        horizontal: 'center'
+      },
+      transformOrigin: {
+        vertical: 'top',
+        horizontal: 'center'
+      }
+    }, brand && /*#__PURE__*/react.createElement(List_List, {
+      style: {
+        paddingTop: '10px',
+        paddingBottom: '10px'
+      }
+    }, /*#__PURE__*/react.createElement(ListItem, {
+      size: "small",
+      onClick: function onClick() {
+        return handleEdit();
+      }
+    }, /*#__PURE__*/react.createElement(List_ListIcon, {
+      name: "mode_edit"
+    }), /*#__PURE__*/react.createElement(ListText, {
+      withIcon: true
+    }, "Modifier")), /*#__PURE__*/react.createElement(ListItem, {
+      size: "small",
+      onClick: function onClick() {
+        return handleDelete();
+      }
+    }, /*#__PURE__*/react.createElement(List_ListIcon, {
+      name: "delete"
+    }), /*#__PURE__*/react.createElement(ListText, {
+      withIcon: true
+    }, "Supprimer")))));
+  } // ---------------------------------------------------
+
+
+  return /*#__PURE__*/react.createElement(Thumbnail_Thumbnail, {
+    src: brand.logo.url,
+    iconName: "copyright",
+    title: brand.name,
+    subtitle: brand.subtitle,
+    size: "small",
+    bottomRight: bottomRight,
+    rootStyle: style,
+    callbackEnter: handleEnter,
+    callbackLeave: handleLeave,
+    callbackClick: callbackClick
+  });
+}); // ***** RenderBrands *****
+// ************************
+
+var TAG_RenderBrands = function TAG_RenderBrands() {};
+
+var RenderBrands = (0,es/* observer */.Pi)(function (props) {
+  var store = react.useContext(window.storeContext);
+  var app = store.app;
+  var genres = store.genres;
+  var brands = store.brands; // From ... store
+
+  var isLoading = store.isLoading;
+  var nbBrands = brands.nbBrands;
+  var brandsList = brands.getSortedByName(); // ...
+  // Events
+  // ==================================================================================================
+
+  var handleBrandClick = function handleBrandClick(brandId) {
+    store.navigateTo('brand', brandId);
+  }; // Renderers
+  // ==================================================================================================
+  // Fantômes flex
+
+
+  var ghosts = [];
+
+  for (var i = 0; i < 10; i++) {
+    ghosts.push( /*#__PURE__*/react.createElement(ThumbnailGhost, {
+      key: "thumbnail-ghost-".concat(i),
+      size: "small",
+      style: {
+        marginRight: '16px'
+      }
+    }));
+  }
+
+  return /*#__PURE__*/react.createElement("div", null, /*#__PURE__*/react.createElement(Grid_Grid // style={{
+  // 	paddingLeft: '20px',
+  // 	paddingRight: '20px',
+  // }}
+  , null, brandsList.map(function (brand, brandIdx) {
+    return /*#__PURE__*/react.createElement(BrandThumbnail, {
+      key: "thumbnail-brand-".concat(brand.id),
+      brand: brand,
+      style: {
+        marginRight: '20px',
+        marginBottom: '30px'
+      },
+      callbackClick: function callbackClick() {
+        return handleBrandClick(brand.id);
+      }
+    });
+  }), ghosts));
+}); // ***** BrandsHeaderLeft *****
 // ****************************
 
 var Brands_TAG_BrandsHeaderLeft = function TAG_BrandsHeaderLeft() {};
 
 var BrandsHeaderLeft = (0,es/* observer */.Pi)(function (props) {
   var store = react.useContext(window.storeContext);
-  var app = store.app; // ...
-  // Render
+  var app = store.app;
+  var brands = store.brands; // From ... store
+
+  var nbBrands = brands.nbBrands;
+  var loaded = store.loaded; // ...
+
+  var title = "";
+
+  if (loaded) {
+    title = "".concat(nbBrands, " ").concat(nbBrands > 1 ? "Marques" : "Marque");
+  } // Render
   // ==================================================================================================
 
+
   return /*#__PURE__*/react.createElement(HeaderTitle, {
-    title: "Marques",
+    title: title,
     titleStyle: {
       marginLeft: '10px'
     }
@@ -21464,7 +22137,9 @@ var TAG_BrandsHeaderRight = function TAG_BrandsHeaderRight() {};
 var BrandsHeaderRight = (0,es/* observer */.Pi)(function (props) {
   var store = react.useContext(window.storeContext);
   var app = store.app;
-  var brands = store.brands; // ...
+  var brands = store.brands; // From ... store
+
+  var isLoading = app.isLoading; // ...
   // Events
   // ==================================================================================================
 
@@ -21477,6 +22152,7 @@ var BrandsHeaderRight = (0,es/* observer */.Pi)(function (props) {
   return /*#__PURE__*/react.createElement(react.Fragment, null, /*#__PURE__*/react.createElement(IconButton, {
     iconName: "add",
     color: "#FFFFFF",
+    disabled: isLoading,
     onClick: handleAddBrand
   }));
 }); // ***** BrandsMenuItem *****
@@ -21512,25 +22188,44 @@ var TAG_BrandsPage = function TAG_BrandsPage() {};
 
 var BrandsPage = (0,es/* observer */.Pi)(function (props) {
   var store = react.useContext(window.storeContext);
-  var app = store.app; // Renderers
+  var app = store.app;
+  var brands = store.brands; // From ... store
+
+  var loaded = store.loaded;
+  var nbBrands = brands.nbBrands; // ...
+
+  var showHelper = !loaded || nbBrands == 0 ? true : false; // Renderers
   // ==================================================================================================
+
+  var renderPage = function renderPage() {
+    // Render :: Page
+    // ---
+    var pageContent = null;
+
+    if (!showHelper) {
+      pageContent = /*#__PURE__*/react.createElement(RenderBrands, null);
+    }
+
+    return pageContent;
+  };
 
   var renderHelper = function renderHelper() {
     // Render :: Helper
     // ---
     return /*#__PURE__*/react.createElement(Helper_Helper, {
       iconName: "sports_esports",
-      show: true
+      show: showHelper
     });
   };
 
   return /*#__PURE__*/react.createElement("div", {
     className: "nx-page"
-  }, renderHelper());
+  }, renderPage(), renderHelper());
 });
 // EXTERNAL MODULE: ./contexts/plateform/Plateform.css
 var Plateform = __webpack_require__(484);
 ;// CONCATENATED MODULE: ./contexts/plateform/Plateform.jsx
+
 
 
 
@@ -21549,10 +22244,9 @@ var PlateformStore = mobx_state_tree_module/* types.model */.V5.model({
   id: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
   name: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
   nickname: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
-  logo: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  logo: mobx_state_tree_module/* types.optional */.V5.optional(ImageStore, {}),
   cover_shape: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
   // vertical, horizontal, square
-  brand_id: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
   game_ids: mobx_state_tree_module/* types.optional */.V5.optional(mobx_state_tree_module/* types.array */.V5.array(mobx_state_tree_module/* types.string */.V5.string), [])
 }).actions(function (self) {
   return {
@@ -21838,6 +22532,24 @@ var SearchPage = (0,es/* observer */.Pi)(function (props) {
   }, renderHelper());
 });
 ;// CONCATENATED MODULE: ./models/Plateforms.jsx
+function Plateforms_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = Plateforms_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function Plateforms_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return Plateforms_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return Plateforms_arrayLikeToArray(o, minLen); }
+
+function Plateforms_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21862,6 +22574,13 @@ var PlateformsStore = mobx_state_tree_module/* types.model */.V5.model({
       var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
       var library = store.library;
       var path = ipc.sendSync('pathJoin', [library.collectionPath, 'plateforms.json']);
+      return path;
+    },
+
+    get filesFolderPath() {
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var library = store.library;
+      var path = ipc.sendSync('pathJoin', [library.collectionFilesPath, 'plateforms']);
       return path;
     }
 
@@ -21913,10 +22632,39 @@ var PlateformsStore = mobx_state_tree_module/* types.model */.V5.model({
         'brand_id': brandId ? brandId : ''
       });
       popupEditPlateform.open();
+    },
+    "delete": function _delete(plateformId) {
+      // Suppression de la plateforme passée en paramètres
+      // ---
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var games = store.games;
+      var plateform = self.by_id.get(plateformId);
+
+      if (plateform) {
+        // Suppression du logo
+        plateform.logo.deleteFromDisk(self.filesFolderPath); // Suppression des jeux
+
+        var _iterator = Plateforms_createForOfIteratorHelper(plateform.game_ids),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var gameId = _step.value;
+            games["delete"](gameId);
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+
+        self.by_id["delete"](plateformId);
+      }
     }
   };
 });
 ;// CONCATENATED MODULE: ./models/Game.jsx
+
 
 
 
@@ -21932,8 +22680,8 @@ var GameStore = mobx_state_tree_module/* types.model */.V5.model({
   name: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
   release_date: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
   genre: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
-  cover: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
-  background: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  cover: mobx_state_tree_module/* types.optional */.V5.optional(ImageStore, {}),
+  background: mobx_state_tree_module/* types.optional */.V5.optional(ImageStore, {}),
   disc_status: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
   // none, shipping, possesed
   store_status: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
@@ -21976,6 +22724,13 @@ var GamesStore = mobx_state_tree_module/* types.model */.V5.model({
       var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
       var library = store.library;
       var path = ipc.sendSync('pathJoin', [library.collectionPath, 'games.json']);
+      return path;
+    },
+
+    get filesFolderPath() {
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var library = store.library;
+      var path = ipc.sendSync('pathJoin', [library.collectionFilesPath, 'games']);
       return path;
     }
 
@@ -22028,6 +22783,19 @@ var GamesStore = mobx_state_tree_module/* types.model */.V5.model({
         'optimisation_status': 'none'
       });
       popupEditGame.open();
+    },
+    "delete": function _delete(gameId) {
+      // Suppression du jeu passé en paramètres
+      // ---
+      var game = self.by_id.get(gameId);
+
+      if (game) {
+        // Nettoyage de la couverture
+        game.cover.deleteFromDisk(self.filesFolderPath); // Nettoyage de l'image de fond
+
+        game.background.deleteFromDisk(self.filesFolderPath);
+        self.by_id["delete"](gameId);
+      }
     }
   };
 });
@@ -22350,21 +23118,22 @@ var PopupEditBrandStore = mobx_state_tree_module/* types.model */.V5.model({
   return {
     get brand() {
       var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
-      var brands = store.brands;
+      var brands = store.brands; // if (self.brandId) {
+      // 	return brands.by_id.get(self.brandId);
+      // } else {
+      // 	return brands.draft;
+      // }
 
-      if (self.brandId) {
-        return brands.by_id.get(self.brandId);
-      } else {
-        return brands.draft;
-      }
+      return brands.draft;
     },
 
     get baseSavePath() {
-      if (self.brandId) {
-        return ['brands', 'by_id', self.brandId];
-      } else {
-        return ['brands', 'draft'];
-      }
+      // if (self.brandId) {
+      // 	return ['brands', 'by_id', self.brandId];
+      // } else {
+      // 	return ['brands', 'draft'];
+      // }
+      return ['brands', 'draft'];
     },
 
     // Getters
@@ -22405,7 +23174,7 @@ var PopupEditBrandStore = mobx_state_tree_module/* types.model */.V5.model({
         } // Existe déjà ?
 
 
-        if (brand.id && brands.by_id.has(brand.id)) {
+        if (!self.brandId && brand.id && brands.by_id.has(brand.id)) {
           errors.push(app.addError(self.getSavePath(['name']), "Existe déjà."));
         }
       }
@@ -22422,17 +23191,16 @@ var PopupEditBrandStore = mobx_state_tree_module/* types.model */.V5.model({
       var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
       var app = store.app;
       var brands = store.brands;
-      var brandId = self.brandId;
-      var brand = self.brand; // Sauvegarde de l'image sur le disque
+      var draft = brands.draft; // Sauvegarde de l'image sur le disque
 
-      if (brand.logo.file) {
-        brand.logo.setField('id', brand.id);
-        brand.logo.saveToDisk(brands.filesFolderPath);
+      if (draft.logo.file) {
+        draft.logo.setField('id', draft.id);
+        draft.logo.saveToDisk(brands.filesFolderPath);
+        draft.logo.setField('base64', '');
       }
 
-      if (!brandId) {// brands.setBrand(brand);
-      } // brands.save();
-
+      brands.setBrand(draft);
+      brands.save();
     },
     // -
     open: function open() {
@@ -22522,6 +23290,7 @@ var PopupEditBrand_PopupEditBrand = (0,es/* observer */.Pi)(function (props) {
         id: "img-brand-logo",
         component: "input",
         label: "Logo",
+        filesFolderPath: brands.filesFolderPath,
         savePath: brandLogoSavePath,
         disabled: isLoading
       })));
@@ -22862,12 +23631,173 @@ var PopupEditGame_PopupEditGame = (0,es/* observer */.Pi)(function (props) {
     buttons: popupButtons
   }, popupContent);
 });
+// EXTERNAL MODULE: ../../nexus/react/popups/jump_to/PopupJumpTo.css
+var PopupJumpTo = __webpack_require__(89949);
+;// CONCATENATED MODULE: ../../nexus/react/popups/jump_to/PopupJumpTo.jsx
+
+
+
+
+
+
+
+
+
+
+
+ // Models
+// ======================================================================================================
+// ***** PopupJumpToStore *****
+// ****************************
+
+var TAG_PopupJumpToStore = function TAG_PopupJumpToStore() {};
+
+var PopupJumpToStore = mobx_state_tree_module/* types.model */.V5.model({
+  scope: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string),
+  // standard, known
+  chars: mobx_state_tree_module/* types.optional */.V5.optional(mobx_state_tree_module/* types.array */.V5.array(mobx_state_tree_module/* types.string */.V5.string), []),
+  current: mobx_state_tree_module/* types.maybeNull */.V5.maybeNull(mobx_state_tree_module/* types.string */.V5.string)
+}).views(function (self) {
+  return {
+    // Bools
+    // -
+    get isOpen() {
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var app = store.app;
+      var popup = app.popup;
+      return popup.isOpen(popupJumpToKey);
+    }
+
+  };
+}).actions(function (self) {
+  return {
+    setField: function setField(field, value) {
+      self[field] = value;
+    },
+    // -
+    open: function open() {
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var app = store.app;
+      var popup = app.popup;
+      popup.open(popupJumpToKey);
+    },
+    close: function close() {
+      var store = (0,mobx_state_tree_module/* getRoot */.yj)(self);
+      var app = store.app;
+      var popup = app.popup;
+      popup.close(popupJumpToKey);
+    }
+  };
+}); // Functions Components ReactJS
+// ======================================================================================================
+// ***** PopupJumpTo *****
+// ***********************
+
+var TAG_PopupJumpTo = function TAG_PopupJumpTo() {};
+
+var popupJumpToKey = 'popupJumpTo';
+var PopupJumpTo_PopupJumpTo = (0,es/* observer */.Pi)(function (props) {
+  var store = react.useContext(window.storeContext);
+  var app = store.app;
+  var popup = app.popup;
+  var popupJumpTo = store.popupJumpTo; // From ... store
+
+  var isLoading = app.isLoading;
+  var isOpen = popupJumpTo.isOpen;
+  var scope = popupJumpTo.scope; // ...
+
+  var jumpChars = ['&', '#'];
+  var knownChars = popupJumpTo.chars; // Events
+  // ==================================================================================================
+
+  var handleJumpBtnClick = function handleJumpBtnClick(jumpChar) {
+    popupJumpTo.close();
+    var groupId = "group-".concat(jumpChar);
+    var groupNode = document.getElementById(groupId);
+
+    if (groupNode) {
+      // groupNode.scrollIntoView({behavior: "smooth"});
+      groupNode.scrollIntoView();
+    }
+  }; // Render
+  // ==================================================================================================
+  // Popup --> Content
+  // -----------------------------------------------
+  // Fantômes flex
+
+
+  var ghosts = [];
+
+  for (var i = 0; i < 10; i++) {
+    ghosts.push( /*#__PURE__*/react.createElement("div", {
+      className: "g-jump-to-ghost"
+    }));
+  }
+
+  var popupContent = null;
+
+  if (isOpen) {
+    popupContent = /*#__PURE__*/react.createElement("div", {
+      style: {
+        padding: '30px'
+      }
+    }, scope == "standard" && /*#__PURE__*/react.createElement(Grid_Grid, {
+      className: "g-jump-to-chars-wrapper",
+      style: {
+        marginBottom: '20px'
+      }
+    }, jumpChars.map(function (jumpChar, jumpCharIdx) {
+      return /*#__PURE__*/react.createElement(IconButton, {
+        key: "btn-jump-to-".concat(jumpChar),
+        color: "secondary",
+        disabled: knownChars.indexOf(jumpChar) == -1,
+        onClick: function onClick() {
+          return handleJumpBtnClick(jumpChar);
+        }
+      }, jumpChar);
+    })), scope == "standard" && /*#__PURE__*/react.createElement(Grid_Grid, {
+      className: "g-jump-to-chars-wrapper"
+    }, LETTERS.map(function (letter, letterIdx) {
+      return /*#__PURE__*/react.createElement(IconButton, {
+        key: "btn-jump-to-".concat(letter),
+        disabled: knownChars.indexOf(letter) == -1,
+        onClick: function onClick() {
+          return handleJumpBtnClick(letter);
+        }
+      }, letter);
+    }), ghosts), scope == "known" && /*#__PURE__*/react.createElement(Grid_Grid, {
+      className: "g-jump-to-chars-wrapper"
+    }, knownChars.map(function (knownChar, knownCharIdx) {
+      return /*#__PURE__*/react.createElement(IconButton, {
+        key: "btn-jump-to-".concat(knownChar),
+        onClick: function onClick() {
+          return handleJumpBtnClick(knownChar);
+        },
+        style: {
+          fontSize: '13px'
+        }
+      }, knownChar);
+    }), ghosts));
+  } // -----------------------------------------------
+
+
+  return /*#__PURE__*/react.createElement(Popup_Popup, {
+    id: popupJumpToKey,
+    closeVariant: "hover",
+    closeOnClick: true,
+    style: {
+      minWidth: '316px',
+      maxWidth: '316px'
+    }
+  }, popupContent);
+});
 // EXTERNAL MODULE: ./Main.css
 var Main = __webpack_require__(41729);
 ;// CONCATENATED MODULE: ./Main.jsx
 var _popups;
 
 function Main_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -22918,6 +23848,7 @@ var RootStore = mobx_state_tree_module/* types.model */.V5.model({
   popupEditBrand: mobx_state_tree_module/* types.optional */.V5.optional(PopupEditBrandStore, {}),
   popupEditPlateform: mobx_state_tree_module/* types.optional */.V5.optional(PopupEditPlateformStore, {}),
   popupEditGame: mobx_state_tree_module/* types.optional */.V5.optional(PopupEditGameStore, {}),
+  popupJumpTo: mobx_state_tree_module/* types.optional */.V5.optional(PopupJumpToStore, {}),
   loaded: false
 }).actions(function (self) {
   return {
@@ -23020,7 +23951,7 @@ var contexts = {
 }; // Popups
 // -
 
-var popups = (_popups = {}, Main_defineProperty(_popups, popupEditBrandKey, PopupEditBrand_PopupEditBrand), Main_defineProperty(_popups, popupEditPlateformKey, PopupEditPlateform_PopupEditPlateform), Main_defineProperty(_popups, popupEditGameKey, PopupEditGame_PopupEditGame), _popups); // Routes
+var popups = (_popups = {}, Main_defineProperty(_popups, popupEditBrandKey, PopupEditBrand_PopupEditBrand), Main_defineProperty(_popups, popupEditPlateformKey, PopupEditPlateform_PopupEditPlateform), Main_defineProperty(_popups, popupEditGameKey, PopupEditGame_PopupEditGame), Main_defineProperty(_popups, popupJumpToKey, PopupJumpTo_PopupJumpTo), _popups); // Routes
 // -
 
 var routes = {
@@ -23474,6 +24405,13 @@ window.addEventListener('DOMContentLoaded', function () {
 
 /***/ }),
 
+/***/ 89949:
+/***/ (() => {
+
+// extracted by extract-css-chunks-webpack-plugin
+
+/***/ }),
+
 /***/ 65501:
 /***/ (() => {
 
@@ -23558,6 +24496,13 @@ window.addEventListener('DOMContentLoaded', function () {
 
 /***/ }),
 
+/***/ 19393:
+/***/ (() => {
+
+// extracted by extract-css-chunks-webpack-plugin
+
+/***/ }),
+
 /***/ 59443:
 /***/ (() => {
 
@@ -23594,6 +24539,13 @@ window.addEventListener('DOMContentLoaded', function () {
 /***/ }),
 
 /***/ 16824:
+/***/ (() => {
+
+// extracted by extract-css-chunks-webpack-plugin
+
+/***/ }),
+
+/***/ 64460:
 /***/ (() => {
 
 // extracted by extract-css-chunks-webpack-plugin
@@ -24144,7 +25096,7 @@ webpackContext.id = 132;
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
 /******/ 	__webpack_require__.O(undefined, [216], () => (__webpack_require__(63979)))
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, [216], () => (__webpack_require__(16101)))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, [216], () => (__webpack_require__(61983)))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

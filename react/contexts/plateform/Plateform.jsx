@@ -3,6 +3,8 @@ import { types, getRoot } from "mobx-state-tree";
 import { observer } from "mobx-react-lite";
 import clsx from 'clsx';
 
+import { ImageStore } from 'nexus/forms/image/Image';
+
 import { Helper } from 'nexus/ui/helper/Helper';
 import { HeaderTitle } from 'nexus/layout/header/Header';
 import { MenuItem } from 'nexus/layout/menu/Menu';
@@ -22,10 +24,9 @@ export const PlateformStore = types
 		id: types.maybeNull(types.string),
 		name: types.maybeNull(types.string),
 		nickname: types.maybeNull(types.string),
-		logo: types.maybeNull(types.string),
+		logo: types.optional(ImageStore, {}),
 		cover_shape: types.maybeNull(types.string), // vertical, horizontal, square
 
-		brand_id: types.maybeNull(types.string),
 		game_ids: types.optional(types.array(types.string), []),
 	})
 	.actions(self => ({

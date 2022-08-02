@@ -3,6 +3,8 @@ import { types, getRoot } from "mobx-state-tree";
 import { observer } from "mobx-react-lite";
 import clsx from 'clsx';
 
+import { ImageStore } from 'nexus/forms/image/Image';
+
 
 // Models
 // ======================================================================================================
@@ -18,8 +20,8 @@ export const GameStore = types
 		release_date: types.maybeNull(types.string),
 		genre: types.maybeNull(types.string),
 
-		cover: types.maybeNull(types.string),
-		background: types.maybeNull(types.string),
+		cover: types.optional(ImageStore, {}),
+		background: types.optional(ImageStore, {}),
 
 		disc_status: types.maybeNull(types.string), // none, shipping, possesed
 		store_status: types.maybeNull(types.string), // none, shipping, possesed

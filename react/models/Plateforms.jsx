@@ -30,6 +30,13 @@ export const PlateformsStore = types
 			return path;
 		},
 
+		get filesFolderPath() {
+			const store = getRoot(self);
+			const library = store.library;
+			const path = ipc.sendSync('pathJoin', [library.collectionFilesPath, 'plateforms']);
+			return path;
+		},
+
 	}))
 	.actions(self => ({
 
@@ -93,6 +100,29 @@ export const PlateformsStore = types
 				'brand_id': (brandId) ? brandId : '',
 			});
 			popupEditPlateform.open();
+		},
+
+		delete: (plateformId) => {
+
+			// Suppression de la plateforme passée en paramètres
+			// ---
+
+			const store = getRoot(self);
+			const games = store.games;
+
+			const plateform = self.by_id.get(plateformId);
+			if (plateform) {
+
+				// Suppression du logo
+				plateform.logo.deleteFromDisk(self.filesFolderPath);
+
+				// Suppression des jeux
+				for (const gameId of plateform.game_ids) {
+					games.delete(gameId);
+				}
+
+				self.by_id.delete(plateformId);
+			}
 		},
 
 	}))

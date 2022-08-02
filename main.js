@@ -318,6 +318,14 @@ ipcMain.on("copySync", (event, [params]) => {
 	event.returnValue = fs.copySync(params.source, params.target);
 });
 
+ipcMain.on("removeSync", (event, [targetPath]) => {
+
+	// Suppression de fichier / dossier
+	// ---
+
+	event.returnValue = fs.removeSync(targetPath);
+});
+
 // ***** json *****
 // ****************
 
